@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quadro Vivo - Master Edition v5.6</title>
+    <title>Quadro Vivo - Master Edition v5.7</title>
     
     <!-- Bibliotecas Externas (CDNs) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -221,7 +221,7 @@
 
         .separator { width: 1px; background: var(--glass-border); height: 24px; margin: 0 5px; }
 
-        /* Estilo Ativo Genérico (para qualquer som a tocar) */
+        /* Estilo Ativo Genérico */
         .tool-btn.sound-playing {
             background: rgba(255, 255, 255, 0.2);
             border-color: var(--text-color);
@@ -517,7 +517,7 @@
         }
 
         function toggleSound(key) {
-            initAudio(); // Necessário para contextos de áudio
+            initAudio(); 
 
             // 1. Verificar se já está a tocar: Se sim, PARAR.
             if (state.activeSounds[key]) {
@@ -534,7 +534,7 @@
 
             // 2. Se não está a tocar, INICIAR.
             const url = AUDIO_URLS[key];
-            const isLoop = (key === 'drum' || key === 'clap'); // Defines quais são loops
+            const isLoop = (key === 'drum' || key === 'clap'); 
 
             if (url) {
                 const audio = new Audio(url);
@@ -554,14 +554,11 @@
 
                 audio.play().catch(e => {
                     console.log("Erro URL, fallback synth", e);
-                    // Fallback Synth (lógica simplificada para brevidade no fallback)
                     playSynthesis(key);
-                    // No synth, o toggle visual é mais complexo, removemos logo o estado visual
                     delete state.activeSounds[key];
                     updateSoundButtonState(key, false);
                 });
             } else {
-                // Se não houver URL configurado
                 playSynthesis(key);
             }
 
@@ -573,29 +570,25 @@
             const btn = document.getElementById(`btn-${key}`);
             if (!btn) return;
             
-            // Classes específicas para animações diferentes ou genérica
             if (key === 'drum') {
                 isActive ? btn.classList.add('drum-active') : btn.classList.remove('drum-active');
             } else if (key === 'clap') {
                 isActive ? btn.classList.add('clap-active') : btn.classList.remove('clap-active');
             } else {
-                // Para os outros, uma classe genérica de "tocar"
                 isActive ? btn.classList.add('sound-playing') : btn.classList.remove('sound-playing');
             }
         }
 
-        // --- SINTETIZADORES (Mantidos como Fallback rápido) ---
+        // --- SINTETIZADORES ---
         function playSynthesis(key) {
             const ctx = state.audioCtx;
             const now = ctx.currentTime;
-            // (Lógica simplificada de one-shot, não suporta toggle stop perfeito no fallback, prioriza URL)
             if (key === 'success') { playTone(523.25, 'sine', 0.1, now); playTone(659.25, 'sine', 0.1, now + 0.1); playTone(783.99, 'triangle', 0.3, now + 0.2); } 
             else if (key === 'error') { playTone(150, 'sawtooth', 0.3, now); playTone(100, 'sawtooth', 0.3, now + 0.2); }
             else if (key === 'pointUp') { playTone(880, 'sine', 0.1, now); }
             else if (key === 'pointDown') { playTone(200, 'square', 0.2, now); }
             else if (key === 'fanfare') { playTone(523.25, 'triangle', 0.15, now); playTone(659.25, 'triangle', 0.15, now + 0.15); playTone(783.99, 'triangle', 0.15, now + 0.3); playTone(1046.50, 'triangle', 0.6, now + 0.45); }
             else if (key === 'trophy') { playTone(392.00, 'square', 0.1, now); playTone(523.25, 'square', 0.1, now + 0.1); playTone(659.25, 'square', 0.1, now + 0.2); playTone(783.99, 'square', 0.4, now + 0.3); playTone(523.25, 'square', 0.1, now + 0.7); playTone(1046.50, 'square', 0.8, now + 0.8); }
-            // Loops sintéticos removidos para focar na qualidade do URL, mas o som one-shot existe.
         }
 
         function playTone(freq, type, dur, time) {
@@ -634,7 +627,6 @@
                 els.scoreboard.style.display = 'none'; 
                 clearInterval(state.timerInterval); 
                 els.timer.style.display = 'none';
-                // Parar sons se mudar de modo
                 Object.keys(state.activeSounds).forEach(key => toggleSound(key));
             }
         }
@@ -647,26 +639,104 @@
             els.input.focus();
         }
         function manualSubmit() { const c = els.input.value.trim(); if(c) { processInput(c); els.input.value = ""; } els.input.focus(); }
-        function btnGenerateQR() { const c = els.input.value.trim() || els.mainText.innerText; if(c) { updateDisplay(c, 'qr_force'); els.input.focus(); } }
-        function btnDice() { 
-            els.mainText.innerHTML = `<div class="dice-wrapper"><div id="dice-result" class="dice-result-label">...</div><div id="dice-visuals" class="dice-visuals dice-shake"><span>⚀</span><span>⚅</span></div></div>`;
-            toggleSound('success'); 
-            setTimeout(() => { document.getElementById('dice-result').innerText = "7"; document.getElementById('dice-result').classList.add('show'); }, 1000);
-        } 
-        function btnRandomPicker() { 
-            const input = prompt("Nomes:"); if(input) { els.mainText.innerText = "Sorteando..."; setTimeout(() => { els.mainText.innerText = input.split(',')[0]; toggleSound('fanfare'); }, 1000); }
+        
+        function btnGenerateQR() { 
+            // Toggle Logic
+            if(els.qrContainer.style.display === 'block') {
+                els.qrContainer.style.display = 'none';
+                return;
+            }
+            const c = els.input.value.trim() || els.mainText.innerText; 
+            if(c) { updateDisplay(c, 'qr_force'); els.input.focus(); } 
         }
+        
+        function btnDice() { 
+            // Lógica de sorteio de dados real
+            const diceChars = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+            els.mainText.classList.remove('exiting');
+            els.mainText.style.display = 'block';
+            els.qrContainer.style.display = 'none';
+            els.mainText.innerHTML = `<div class="dice-wrapper"><div id="dice-result" class="dice-result-label">A lançar...</div><div id="dice-visuals" class="dice-visuals dice-shake"><span id="d1"></span><span id="d2"></span></div></div>`;
+            els.mainText.classList.add('visible');
+            
+            toggleSound('success'); 
+            
+            let rolls = 0;
+            const max = 15;
+            const interval = setInterval(() => {
+                const v1 = Math.floor(Math.random()*6);
+                const v2 = Math.floor(Math.random()*6);
+                document.getElementById('d1').innerText = diceChars[v1];
+                document.getElementById('d2').innerText = diceChars[v2];
+                rolls++;
+                if(rolls >= max) {
+                    clearInterval(interval);
+                    document.querySelector('.dice-visuals').classList.remove('dice-shake');
+                    const sum = v1 + v2 + 2;
+                    const res = document.getElementById('dice-result');
+                    res.innerText = `Soma: ${sum}`;
+                    res.classList.add('show');
+                }
+            }, 80);
+        } 
+        
+        function btnRandomPicker() { 
+            const input = prompt("Nomes (separados por vírgula):"); 
+            if(!input) return;
+            const names = input.split(',').map(n => n.trim()).filter(n=>n);
+            if(names.length < 2) { alert("Mínimo 2 nomes"); return; }
+
+            els.mainText.classList.remove('exiting');
+            els.mainText.style.display = 'block';
+            els.qrContainer.style.display = 'none';
+            els.mainText.innerText = "Sorteando..."; 
+            els.mainText.classList.add('visible');
+            
+            let spins = 0;
+            const max = 30;
+            const interval = setInterval(() => {
+                els.mainText.innerText = names[Math.floor(Math.random() * names.length)];
+                spins++;
+                if(spins >= max) {
+                    clearInterval(interval);
+                    toggleSound('fanfare');
+                    triggerConfetti();
+                }
+            }, 100);
+        }
+        
         function toggleScoreboard() { els.scoreboard.style.display = (els.scoreboard.style.display === 'flex') ? 'none' : 'flex'; }
+        
         function updateScore(team, e) { 
             const d = (e.shiftKey || e.button === 2) ? -1 : 1; 
             state.scores[team] = Math.max(0, state.scores[team] + d); 
             if(team==='A') els.scoreA.innerText = state.scores.A; else els.scoreB.innerText = state.scores.B;
             toggleSound(d > 0 ? 'pointUp' : 'pointDown');
         }
-        function btnTimer() { const m = prompt("Minutos:"); if(m) startTimer(m); }
+        
+        function btnTimer() { 
+            if (state.timerInterval) {
+                // Stop Timer
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+                els.timer.style.display = 'none';
+                els.timer.style.color = '';
+            } else {
+                // Start Timer
+                const m = prompt("Minutos:", "5"); 
+                if(m && !isNaN(m)) startTimer(m); 
+            }
+        }
+        
         function btnClear() { 
             els.mainText.classList.remove('visible'); 
+            els.mainText.innerText = "";
             els.qrContainer.style.display='none'; 
+            els.scoreboard.style.display = 'none';
+            clearInterval(state.timerInterval);
+            state.timerInterval = null;
+            els.timer.style.display = 'none';
+            
             // Parar todos os sons
             Object.keys(state.activeSounds).forEach(key => toggleSound(key));
         }
