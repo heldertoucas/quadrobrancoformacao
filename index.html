@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quadro Vivo - Master Edition v5.7</title>
+    <title>Quadro Vivo - Master Edition v5.9</title>
     
     <!-- Bibliotecas Externas (CDNs) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -148,7 +148,7 @@
         .list-mode { text-align: left; font-size: 0.6em; display: inline-block; }
         .list-bullet { color: var(--accent-color); margin-right: 15px; }
         .dice-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .dice-result-label { font-size: 3rem; font-weight: 300; color: var(--accent-color); opacity: 0; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .dice-result-label { font-size: 4rem; font-weight: 800; color: var(--accent-color); opacity: 0; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .dice-result-label.show { opacity: 1; transform: translateY(0); }
         .dice-visuals { display: flex; gap: 30px; font-size: 10rem; line-height: 1; color: var(--text-color); text-shadow: 0 15px 30px rgba(0,0,0,0.4); }
         .dice-shake { animation: shake 0.5s infinite; }
@@ -157,11 +157,57 @@
         .exiting { opacity: 0; transform: scale(1.1) translateY(-40px); transition: all 0.4s ease-in; }
         #qr-container { margin-top: 30px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: none; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
         @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        #scoreboard { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 40px; z-index: 50; display: none; }
-        .score-team { text-align: center; background: var(--glass-bg); padding: 10px 20px; border-radius: 15px; border: 1px solid var(--glass-border); backdrop-filter: blur(5px); cursor: pointer; transition: transform 0.2s; }
+        
+        /* PLACAR DINÂMICO */
+        #scoreboard { 
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%); 
+            display: flex; gap: 20px; z-index: 50; display: none; 
+            align-items: center;
+        }
+        
+        .score-team { 
+            text-align: center; 
+            background: var(--glass-bg); 
+            padding: 10px 20px; 
+            border-radius: 15px; 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(5px); 
+            cursor: pointer; 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border 0.3s; 
+            min-width: 100px;
+        }
+        
         .score-team:hover { transform: scale(1.05); background: var(--glass-hover); }
+        
+        /* Estilo de Vencedor */
+        .score-team.winner-highlight {
+            transform: scale(1.2);
+            border: 3px solid var(--gold-color);
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            z-index: 60;
+        }
+
         .score-val { font-size: 2.5rem; font-weight: 700; line-height: 1; }
         .score-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; }
+        
+        /* Botão Alvo (Vencedor) */
+        .score-action-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-color);
+            margin-left: 10px;
+        }
+        .score-action-btn:hover { background: var(--glass-hover); transform: scale(1.1); color: var(--gold-color); }
+
         #timer-overlay { position: fixed; top: 20px; right: 20px; font-size: 2rem; font-weight: 300; background: var(--glass-bg); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--glass-border); backdrop-filter: blur(5px); display: none; z-index: 100; }
 
         /* Painel de Controlo */
@@ -323,14 +369,7 @@
 
     <!-- Placar -->
     <div id="scoreboard">
-        <div class="score-team" onmousedown="updateScore('A', event)">
-            <div class="score-val" id="score-a">0</div>
-            <div class="score-label">Equipa A</div>
-        </div>
-        <div class="score-team" onmousedown="updateScore('B', event)">
-            <div class="score-val" id="score-b">0</div>
-            <div class="score-label">Equipa B</div>
-        </div>
+        <!-- Gerado Dinamicamente -->
     </div>
 
     <!-- Temporizador -->
@@ -465,10 +504,9 @@
 
         const state = {
             queue: [], history: [], historyIndex: -1, currentFontSize: 5, timerInterval: null,
-            theme: 'dark', mode: 'pro', brand: 'futuro', scores: { A: 0, B: 0 },
+            theme: 'dark', mode: 'pro', brand: 'futuro', scores: {},
             audioCtx: null, isExpanded: false, noiseBuffer: null,
-            // Gestão Unificada de Áudio
-            activeSounds: {} // Guarda { key: { audio: HTMLAudioElement, type: 'url' } }
+            activeSounds: {} 
         };
 
         const els = {
@@ -478,8 +516,6 @@
             queueBadge: document.getElementById('queue-badge'),
             timer: document.getElementById('timer-overlay'),
             scoreboard: document.getElementById('scoreboard'),
-            scoreA: document.getElementById('score-a'),
-            scoreB: document.getElementById('score-b'),
             controlPanel: document.getElementById('control-panel'),
             btnExpand: document.getElementById('btn-expand'),
             navLeft: document.getElementById('nav-left'),
@@ -487,6 +523,7 @@
             navCount: document.getElementById('nav-queue-count'),
             logoArea: document.getElementById('logo-area'),
             appLogo: document.getElementById('app-logo'),
+            btnDrum: document.getElementById('btn-drum'),
             btnSoundDrawer: document.getElementById('btn-sound-drawer'),
             soundDrawer: document.getElementById('sound-drawer'),
             root: document.documentElement
@@ -504,7 +541,7 @@
             });
         }
 
-        // --- SISTEMA DE ÁUDIO UNIFICADO (TOGGLE + URL + LOOP) ---
+        // --- SISTEMA DE ÁUDIO UNIFICADO ---
         function initAudio() {
             if (!state.audioCtx) state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (!state.noiseBuffer && state.audioCtx) {
@@ -518,40 +555,29 @@
 
         function toggleSound(key) {
             initAudio(); 
-
-            // 1. Verificar se já está a tocar: Se sim, PARAR.
             if (state.activeSounds[key]) {
                 const sound = state.activeSounds[key];
                 if (sound.type === 'url' && sound.audio) {
                     sound.audio.pause();
                     sound.audio.currentTime = 0;
                 }
-                // Limpar estado visual e lógico
                 delete state.activeSounds[key];
                 updateSoundButtonState(key, false);
                 return;
             }
-
-            // 2. Se não está a tocar, INICIAR.
             const url = AUDIO_URLS[key];
-            const isLoop = (key === 'drum' || key === 'clap'); 
-
+            const isLoop = (key === 'drum' || key === 'clap' || key === 'palmas'); 
             if (url) {
                 const audio = new Audio(url);
                 audio.loop = isLoop;
-                
-                // Registo no estado
                 state.activeSounds[key] = { audio: audio, type: 'url' };
                 updateSoundButtonState(key, true);
-
-                // Auto-stop para não-loops quando acabam
                 if (!isLoop) {
                     audio.onended = () => {
                         delete state.activeSounds[key];
                         updateSoundButtonState(key, false);
                     };
                 }
-
                 audio.play().catch(e => {
                     console.log("Erro URL, fallback synth", e);
                     playSynthesis(key);
@@ -561,25 +587,17 @@
             } else {
                 playSynthesis(key);
             }
-
-            // Efeitos Visuais Extra
-            if (key === 'success' || key === 'fanfare' || key === 'trophy') triggerConfetti(0.5);
+            if (key === 'fanfare' || key === 'trophy') triggerConfetti(0.5);
         }
 
         function updateSoundButtonState(key, isActive) {
             const btn = document.getElementById(`btn-${key}`);
             if (!btn) return;
-            
-            if (key === 'drum') {
-                isActive ? btn.classList.add('drum-active') : btn.classList.remove('drum-active');
-            } else if (key === 'clap') {
-                isActive ? btn.classList.add('clap-active') : btn.classList.remove('clap-active');
-            } else {
-                isActive ? btn.classList.add('sound-playing') : btn.classList.remove('sound-playing');
-            }
+            if (key === 'drum') isActive ? btn.classList.add('drum-active') : btn.classList.remove('drum-active');
+            else if (key === 'clap' || key === 'palmas') isActive ? btn.classList.add('clap-active') : btn.classList.remove('clap-active');
+            else isActive ? btn.classList.add('sound-playing') : btn.classList.remove('sound-playing');
         }
 
-        // --- SINTETIZADORES ---
         function playSynthesis(key) {
             const ctx = state.audioCtx;
             const now = ctx.currentTime;
@@ -599,6 +617,10 @@
             gain.gain.setValueAtTime(0.1, time);
             gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
             osc.start(time); osc.stop(time + dur);
+        }
+        
+        function triggerConfetti(scalar = 1) {
+            confetti({ particleCount: 150 * scalar, spread: 70, origin: { y: 0.6 }, colors: ['#4facfe', '#00f2fe', '#ffffff'] });
         }
 
         // --- UI GERAL ---
@@ -641,7 +663,6 @@
         function manualSubmit() { const c = els.input.value.trim(); if(c) { processInput(c); els.input.value = ""; } els.input.focus(); }
         
         function btnGenerateQR() { 
-            // Toggle Logic
             if(els.qrContainer.style.display === 'block') {
                 els.qrContainer.style.display = 'none';
                 return;
@@ -651,33 +672,55 @@
         }
         
         function btnDice() { 
-            // Lógica de sorteio de dados real
-            const diceChars = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
             els.mainText.classList.remove('exiting');
             els.mainText.style.display = 'block';
             els.qrContainer.style.display = 'none';
-            els.mainText.innerHTML = `<div class="dice-wrapper"><div id="dice-result" class="dice-result-label">A lançar...</div><div id="dice-visuals" class="dice-visuals dice-shake"><span id="d1"></span><span id="d2"></span></div></div>`;
-            els.mainText.classList.add('visible');
-            
-            toggleSound('success'); 
-            
-            let rolls = 0;
-            const max = 15;
-            const interval = setInterval(() => {
-                const v1 = Math.floor(Math.random()*6);
-                const v2 = Math.floor(Math.random()*6);
-                document.getElementById('d1').innerText = diceChars[v1];
-                document.getElementById('d2').innerText = diceChars[v2];
-                rolls++;
-                if(rolls >= max) {
-                    clearInterval(interval);
-                    document.querySelector('.dice-visuals').classList.remove('dice-shake');
-                    const sum = v1 + v2 + 2;
-                    const res = document.getElementById('dice-result');
-                    res.innerText = `Soma: ${sum}`;
-                    res.classList.add('show');
-                }
-            }, 80);
+            els.scoreboard.style.display = 'none'; 
+
+            setTimeout(() => {
+                const diceChars = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+                
+                els.mainText.innerHTML = `
+                    <div class="dice-wrapper">
+                        <div id="dice-result" class="dice-result-label">A lançar...</div>
+                        <div id="dice-visuals" class="dice-visuals dice-shake">
+                            <span id="d1"></span>
+                            <span id="d2"></span>
+                        </div>
+                    </div>
+                `;
+                
+                void els.mainText.offsetWidth;
+                els.mainText.classList.add('visible');
+                
+                let rolls = 0;
+                const max = 20; 
+                
+                const d1El = document.getElementById('d1');
+                const d2El = document.getElementById('d2');
+                const resEl = document.getElementById('dice-result');
+                const visEl = document.querySelector('.dice-visuals');
+
+                const interval = setInterval(() => {
+                    const v1 = Math.floor(Math.random() * 6);
+                    const v2 = Math.floor(Math.random() * 6);
+                    if(d1El) d1El.innerText = diceChars[v1];
+                    if(d2El) d2El.innerText = diceChars[v2];
+                    rolls++;
+                    if(rolls >= max) {
+                        clearInterval(interval);
+                        if(visEl) visEl.classList.remove('dice-shake');
+                        const sum = v1 + v2 + 2; 
+                        if(resEl) {
+                            resEl.innerText = `${sum}`;
+                            resEl.classList.add('show');
+                            toggleSound('success'); 
+                            triggerConfetti();
+                        }
+                    }
+                }, 80);
+            }, 100);
+            els.input.focus();
         } 
         
         function btnRandomPicker() { 
@@ -689,40 +732,92 @@
             els.mainText.classList.remove('exiting');
             els.mainText.style.display = 'block';
             els.qrContainer.style.display = 'none';
-            els.mainText.innerText = "Sorteando..."; 
-            els.mainText.classList.add('visible');
             
-            let spins = 0;
-            const max = 30;
-            const interval = setInterval(() => {
-                els.mainText.innerText = names[Math.floor(Math.random() * names.length)];
-                spins++;
-                if(spins >= max) {
-                    clearInterval(interval);
-                    toggleSound('fanfare');
-                    triggerConfetti();
-                }
+            setTimeout(() => {
+                els.mainText.innerText = "Sorteando...";
+                void els.mainText.offsetWidth;
+                els.mainText.classList.add('visible');
+
+                let spins = 0;
+                const max = 30;
+                const interval = setInterval(() => {
+                    els.mainText.innerText = names[Math.floor(Math.random() * names.length)];
+                    spins++;
+                    if(spins >= max) {
+                        clearInterval(interval);
+                        toggleSound('fanfare');
+                        triggerConfetti();
+                    }
+                }, 100);
             }, 100);
         }
         
-        function toggleScoreboard() { els.scoreboard.style.display = (els.scoreboard.style.display === 'flex') ? 'none' : 'flex'; }
+        function toggleScoreboard() { 
+            if(els.scoreboard.style.display === 'flex') {
+                els.scoreboard.style.display = 'none';
+            } else {
+                const numTeams = prompt("Quantas equipas? (2-6)", "2");
+                const n = parseInt(numTeams);
+                if(isNaN(n) || n < 2 || n > 6) return;
+                
+                state.scores = {};
+                let html = '';
+                for(let i=0; i<n; i++) {
+                    const char = String.fromCharCode(65 + i);
+                    state.scores[char] = 0;
+                    html += `<div class="score-team" id="team-${char}" onmousedown="updateScore('${char}', event)">
+                                <div class="score-val" id="score-${char}">0</div>
+                                <div class="score-label">Equipa ${char}</div>
+                             </div>`;
+                }
+                html += `<div class="score-action-btn" onclick="announceWinner()" title="Apurar Vencedor">🎯</div>`;
+                
+                els.scoreboard.innerHTML = html;
+                els.scoreboard.style.display = 'flex';
+            }
+        }
         
         function updateScore(team, e) { 
             const d = (e.shiftKey || e.button === 2) ? -1 : 1; 
             state.scores[team] = Math.max(0, state.scores[team] + d); 
-            if(team==='A') els.scoreA.innerText = state.scores.A; else els.scoreB.innerText = state.scores.B;
+            document.getElementById(`score-${team}`).innerText = state.scores[team];
             toggleSound(d > 0 ? 'pointUp' : 'pointDown');
+        }
+
+        function announceWinner() {
+            let max = -1;
+            let winners = [];
+            for (const [team, score] of Object.entries(state.scores)) {
+                if (score > max) {
+                    max = score;
+                    winners = [team];
+                } else if (score === max) {
+                    winners.push(team);
+                }
+            }
+
+            if (winners.length > 0) {
+                // Reset highlights
+                document.querySelectorAll('.score-team').forEach(el => el.classList.remove('winner-highlight'));
+                
+                // Highlight winners
+                winners.forEach(team => {
+                    const el = document.getElementById(`team-${team}`);
+                    if(el) el.classList.add('winner-highlight');
+                });
+                
+                toggleSound('trophy');
+                triggerConfetti();
+            }
         }
         
         function btnTimer() { 
             if (state.timerInterval) {
-                // Stop Timer
                 clearInterval(state.timerInterval);
                 state.timerInterval = null;
                 els.timer.style.display = 'none';
                 els.timer.style.color = '';
             } else {
-                // Start Timer
                 const m = prompt("Minutos:", "5"); 
                 if(m && !isNaN(m)) startTimer(m); 
             }
@@ -736,8 +831,6 @@
             clearInterval(state.timerInterval);
             state.timerInterval = null;
             els.timer.style.display = 'none';
-            
-            // Parar todos os sons
             Object.keys(state.activeSounds).forEach(key => toggleSound(key));
         }
         
@@ -749,7 +842,10 @@
             els.mainText.innerText = c; 
             els.mainText.classList.add('visible'); 
             els.qrContainer.style.display = type === 'qr_force' ? 'block' : 'none';
-            if(type === 'qr_force') new QRCode(els.qrContainer, { text: c, width: 256, height: 256 });
+            if(type === 'qr_force') {
+                els.qrContainer.innerHTML = ""; 
+                new QRCode(els.qrContainer, { text: c, width: 256, height: 256 });
+            }
         }
         function startTimer(m) { 
             clearInterval(state.timerInterval);
