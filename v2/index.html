@@ -13,9 +13,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;900&family=Orbitron:wght@400;700&family=Patrick+Hand&family=Quicksand:wght@400;700&family=Raleway:wght@400;700&family=Poppins:wght@400;700&family=VT323&family=Press+Start+2P&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* --- 1. THEME & VARIABLES --- */
@@ -52,139 +50,6 @@
             --modal-overlay: rgba(255, 255, 255, 0.6);
             --expanded-bg: rgba(255, 255, 255, 0.95);
             --input-bg: rgba(0, 0, 0, 0.05);
-        }
-
-        /* 1. Neon (Cyberpunk) */
-        [data-theme="neon"] {
-            --bg-grad-1: #050510;
-            --bg-grad-2: #100b20;
-            --bg-grad-3: #0a0a1a;
-            --text-color: #e0e0ff;
-            --glass-bg: rgba(10, 10, 30, 0.6);
-            --glass-border: #00ff9f;
-            --glass-hover: rgba(0, 255, 159, 0.1);
-            --accent-color: #00ff9f;
-            --warn-color: #ff0055;
-            --modal-overlay: rgba(0, 5, 20, 0.8);
-            --expanded-bg: rgba(5, 5, 20, 0.95);
-            --input-bg: rgba(0, 0, 0, 0.5);
-            --font-main: 'Orbitron', sans-serif;
-            box-shadow: 0 0 10px var(--accent-color);
-        }
-
-        /* 2. Sketch (Papel) */
-        [data-theme="sketch"] {
-            --bg-grad-1: #fdf6e3;
-            --bg-grad-2: #fdf6e3;
-            --bg-grad-3: #eee8d5;
-            --text-color: #2b2b2b;
-            --glass-bg: rgba(255, 255, 255, 0.95);
-            --glass-border: #2b2b2b;
-            --glass-hover: rgba(0, 0, 0, 0.05);
-            --accent-color: #d33682;
-            --modal-overlay: rgba(255, 248, 220, 0.8);
-            --expanded-bg: #fdf6e3;
-            --input-bg: rgba(255, 255, 255, 0.5);
-            --font-main: 'Patrick Hand', cursive;
-        }
-
-        /* Specific override for Sketch borders */
-        [data-theme="sketch"] * {
-            border-radius: 2px !important;
-        }
-
-        /* 3. Nature (Natureza) */
-        [data-theme="nature"] {
-            --bg-grad-1: #e0f7fa;
-            --bg-grad-2: #e8f5e9;
-            --bg-grad-3: #c8e6c9;
-            --text-color: #2e4a3d;
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --glass-hover: rgba(255, 255, 255, 0.6);
-            --accent-color: #00897b;
-            --modal-overlay: rgba(230, 245, 235, 0.7);
-            --expanded-bg: rgba(240, 255, 245, 0.95);
-            --input-bg: rgba(255, 255, 255, 0.3);
-            --font-main: 'Quicksand', sans-serif;
-        }
-
-        /* 4. Ocean (Oceano) */
-        [data-theme="ocean"] {
-            --bg-grad-1: #001f3f;
-            --bg-grad-2: #003366;
-            --bg-grad-3: #004080;
-            --text-color: #dbeaff;
-            --glass-bg: rgba(0, 30, 60, 0.4);
-            --glass-border: rgba(100, 200, 255, 0.2);
-            --glass-hover: rgba(100, 200, 255, 0.1);
-            --accent-color: #4facfe;
-            --modal-overlay: rgba(0, 20, 40, 0.7);
-            --expanded-bg: rgba(0, 31, 63, 0.95);
-            --input-bg: rgba(0, 0, 0, 0.3);
-            --font-main: 'Raleway', sans-serif;
-        }
-
-        /* 5. Sunset (Pôr do Sol) */
-        [data-theme="sunset"] {
-            --bg-grad-1: #2b102f;
-            --bg-grad-2: #5b1e3e;
-            --bg-grad-3: #8c2d4a;
-            --text-color: #ffe3e3;
-            --glass-bg: rgba(80, 30, 50, 0.3);
-            --glass-border: rgba(255, 100, 100, 0.2);
-            --glass-hover: rgba(255, 200, 200, 0.1);
-            --accent-color: #ff9f1c;
-            --modal-overlay: rgba(43, 16, 47, 0.8);
-            --expanded-bg: rgba(91, 30, 62, 0.95);
-            --input-bg: rgba(0, 0, 0, 0.3);
-            --font-main: 'Poppins', sans-serif;
-        }
-
-        /* 6. Gameboy (Retro) */
-        [data-theme="gameboy"] {
-            --bg-grad-1: #8b956d;
-            --bg-grad-2: #8b956d;
-            --bg-grad-3: #c4cfa1;
-            --text-color: #0f380f;
-            --glass-bg: rgba(15, 56, 15, 0.1);
-            --glass-border: #0f380f;
-            --glass-hover: rgba(15, 56, 15, 0.2);
-            --accent-color: #306230;
-            --warn-color: #0f380f;
-            /* No red in gameboy */
-            --modal-overlay: rgba(139, 149, 109, 0.9);
-            --expanded-bg: #8b956d;
-            --input-bg: rgba(15, 56, 15, 0.1);
-            --font-main: 'VT323', monospace;
-        }
-
-        [data-theme="gameboy"] * {
-            border-radius: 0 !important;
-            /* Sharp edges */
-        }
-
-        /* 7. 8-bit (Arcade) */
-        [data-theme="8bit"] {
-            --bg-grad-1: #000000;
-            --bg-grad-2: #1a1a1a;
-            --bg-grad-3: #222222;
-            --text-color: #ffffff;
-            --glass-bg: #000000;
-            --glass-border: #ffffff;
-            --glass-hover: #333333;
-            --accent-color: #ff0044;
-            --warn-color: #ffcc00;
-            --modal-overlay: rgba(0, 0, 0, 0.9);
-            --expanded-bg: #000000;
-            --input-bg: #222222;
-            --font-main: 'Press Start 2P', cursive;
-        }
-
-        [data-theme="8bit"] * {
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            border-width: 2px !important;
         }
 
         /* --- 2. RESET & BASE --- */
@@ -1167,224 +1032,6 @@
                 bottom: 15px;
             }
         }
-
-        /* --- SLIDE CREATOR UI --- */
-        .slide-options-area {
-            width: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--glass-border);
-            animation: fadeInMenu 0.3s ease;
-        }
-
-        .slide-options-area.visible {
-            display: flex;
-        }
-
-        .color-schemes {
-            display: flex;
-            gap: 15px;
-        }
-
-        .scheme-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid var(--glass-border);
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .scheme-btn:hover,
-        .scheme-btn.active {
-            transform: scale(1.15);
-            border-color: white;
-            box-shadow: 0 0 15px var(--accent-color);
-        }
-
-        /* Balloons */
-        .temp-balloon {
-            position: absolute;
-            background: var(--accent-color);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s, transform 0.5s;
-            z-index: 200;
-            white-space: nowrap;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            font-weight: 600;
-        }
-
-        .temp-balloon.visible {
-            opacity: 1;
-            transform: translateY(-10px);
-        }
-
-        .temp-balloon::after {
-            content: '';
-            position: absolute;
-            border: 6px solid transparent;
-        }
-
-        .temp-balloon.top {
-            bottom: 100%;
-            left: 20px;
-            margin-bottom: 10px;
-        }
-
-        .temp-balloon.top::after {
-            top: 100%;
-            left: 20px;
-            border-top-color: var(--accent-color);
-        }
-
-        .temp-balloon.static-balloon {
-            position: relative;
-            transform: none !important;
-            margin-bottom: 5px;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .temp-balloon.static-balloon::after {
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-top-color: var(--accent-color);
-            bottom: auto;
-            border-bottom-color: transparent;
-        }
-
-        /* LINKS DRAWER (GRID BELOW INPUT) */
-        .links-drawer {
-            display: none;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 15px;
-            margin-top: 10px;
-            border-top: 1px solid var(--glass-border);
-            animation: fadeIn 0.3s ease;
-            width: 100%;
-        }
-
-        .links-drawer.visible {
-            display: grid;
-        }
-
-        .link-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 12px 15px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-color);
-            text-align: left;
-            font-weight: 500;
-        }
-
-        .link-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-            border-color: var(--accent-color);
-        }
-
-        .link-card svg {
-            opacity: 0.8;
-            stroke: var(--accent-color);
-        }
-
-        /* INLINE SLIDE CONTROLS */
-        .inline-scheme-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            /* Ensure border is visible */
-            transition: transform 0.2s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            /* Shadow for better visibility */
-        }
-
-        .inline-scheme-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .inline-scheme-btn.active {
-            border-color: white;
-            transform: scale(1.15);
-            box-shadow: 0 0 8px var(--accent-color);
-        }
-
-
-        .slide-inline-controls {
-            display: none;
-            /* Default hidden */
-            align-items: center;
-            gap: 8px;
-            margin-left: 8px;
-            padding-left: 8px;
-            border-left: 1px solid var(--glass-border);
-            z-index: 20;
-            /* Ensure visibility */
-            position: relative;
-        }
-
-        .slide-inline-controls.visible {
-            display: flex !important;
-            /* Force display when toggled */
-        }
-
-
-        .btn-plane:hover {
-            transform: scale(1.1) rotate(-10deg);
-        }
-
-        /* ZEN MODE - IDLE STATE */
-        body[data-mode="simple"] #logo-area,
-        body[data-mode="simple"] #control-panel,
-        body[data-mode="simple"] .nav-arrow,
-        body[data-mode="simple"] .input-wrapper {
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        body[data-mode="simple"].idle #logo-area {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-20px);
-        }
-
-        body[data-mode="simple"].idle #control-panel {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(20px);
-        }
-
-        body[data-mode="simple"].idle .nav-arrow {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.8);
-        }
-
-        /* Redundant safety for input wrapper if footer selector fails */
-        body[data-mode="simple"].idle .input-wrapper {
-            opacity: 0;
-            pointer-events: none;
-        }
     </style>
 </head>
 
@@ -1401,62 +1048,32 @@
         </button>
 
         <div id="style-menu" class="dropdown-menu" role="menu">
-            <div class="menu-content">
-                <div class="menu-category">Programa</div>
-                <button class="menu-item" onclick="app.setBrand('futuro')" id="brand-futuro" role="menuitem">
-                    <div class="menu-dot"></div> Futuro Digital
-                </button>
-                <button class="menu-item" onclick="app.setBrand('passaporte')" id="brand-passaporte" role="menuitem">
-                    <div class="menu-dot"></div> Passaporte Competências
-                </button>
-                <button class="menu-item" onclick="app.setBrand('ia')" id="brand-ia" role="menuitem">
-                    <div class="menu-dot"></div> IA para Todos
-                </button>
+            <div class="menu-category">Projeto / Identidade</div>
+            <button class="menu-item" onclick="app.setBrand('futuro')" id="brand-futuro" role="menuitem">
+                <div class="menu-dot"></div> Futuro Digital
+            </button>
+            <button class="menu-item" onclick="app.setBrand('passaporte')" id="brand-passaporte" role="menuitem">
+                <div class="menu-dot"></div> Passaporte Competências
+            </button>
+            <button class="menu-item" onclick="app.setBrand('ia')" id="brand-ia" role="menuitem">
+                <div class="menu-dot"></div> IA para Todos
+            </button>
 
-                <div class="menu-divider"></div>
-
-                <div class="menu-category">Modo</div>
-                <button class="menu-item" onclick="app.setMode('pro')" id="mode-pro" role="menuitem">
-                    <div class="menu-dot"></div> Pro
-                </button>
-                <button class="menu-item" onclick="app.setMode('simple')" id="mode-simple" role="menuitem">
-                    <div class="menu-dot"></div> Zen
-                </button>
-
-                <div class="menu-divider"></div>
-
-                <div class="menu-category">Tema</div>
-                <button class="menu-item" onclick="app.setTheme('dark')" id="theme-dark" role="menuitem">
-                    <div class="menu-dot"></div> Escuro
-                </button>
-                <button class="menu-item" onclick="app.setTheme('light')" id="theme-light" role="menuitem">
-                    <div class="menu-dot"></div> Claro
-                </button>
-
-                <div class="menu-divider"></div>
-
-                <button class="menu-item" onclick="app.setTheme('neon')" id="theme-neon" role="menuitem">
-                    <div class="menu-dot"></div> Neon
-                </button>
-                <button class="menu-item" onclick="app.setTheme('sketch')" id="theme-sketch" role="menuitem">
-                    <div class="menu-dot"></div> Sketch
-                </button>
-                <button class="menu-item" onclick="app.setTheme('nature')" id="theme-nature" role="menuitem">
-                    <div class="menu-dot"></div> Natureza
-                </button>
-                <button class="menu-item" onclick="app.setTheme('ocean')" id="theme-ocean" role="menuitem">
-                    <div class="menu-dot"></div> Oceano
-                </button>
-                <button class="menu-item" onclick="app.setTheme('sunset')" id="theme-sunset" role="menuitem">
-                    <div class="menu-dot"></div> Pôr do Sol
-                </button>
-                <button class="menu-item" onclick="app.setTheme('gameboy')" id="theme-gameboy" role="menuitem">
-                    <div class="menu-dot"></div> Gameboy
-                </button>
-                <button class="menu-item" onclick="app.setTheme('8bit')" id="theme-8bit" role="menuitem">
-                    <div class="menu-dot"></div> 8-bit
-                </button>
-            </div>
+            <div class="menu-divider"></div>
+            <div class="menu-category">Modo & Tema</div>
+            <button class="menu-item" onclick="app.setMode('pro')" id="mode-pro" role="menuitem">
+                <div class="menu-dot"></div> Pro (Completo)
+            </button>
+            <button class="menu-item" onclick="app.setMode('simple')" id="mode-simple" role="menuitem">
+                <div class="menu-dot"></div> Zen (Simples)
+            </button>
+            <div class="menu-divider"></div>
+            <button class="menu-item" onclick="app.setTheme('dark')" id="theme-dark" role="menuitem">
+                <div class="menu-dot"></div> Escuro
+            </button>
+            <button class="menu-item" onclick="app.setTheme('light')" id="theme-light" role="menuitem">
+                <div class="menu-dot"></div> Claro
+            </button>
         </div>
     </header>
 
@@ -1571,24 +1188,6 @@
 
             <div class="separator"></div>
 
-            <button id="btn-create-slide" class="tool-btn hidden" onclick="features.slide.toggleInline()"
-                title="Criar Slide">
-                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                </svg>
-                <span>Slide</span>
-            </button>
-
-            <!-- Link Button (Hidden by default, shown with slide) -->
-            <button id="btn-links" class="tool-btn hidden" onclick="ui.toggleLinkMenu()" title="Links Rápidos">
-                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                </svg>
-            </button>
-
             <button class="tool-btn" onclick="app.clear()" title="Limpar Ecrã">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 6h18"></path>
@@ -1641,7 +1240,6 @@
                     <line x1="17" y1="18" x2="3" y2="18"></line>
                 </svg>
             </button>
-            </button>
             <button class="fmt-btn"
                 onmousedown="event.preventDefault(); document.execCommand('justifyCenter', false, null)" title="Centro">
                 <svg viewBox="0 0 24 24">
@@ -1651,18 +1249,6 @@
                     <line x1="21" y1="18" x2="3" y2="18"></line>
                 </svg>
             </button>
-            <div class="separator" style="height: 16px;"></div>
-            <!-- Slide Color Schemes (Visible only in Slide Mode) -->
-            <div id="slide-colors-toolbar" style="display:none; gap:10px; align-items:center;">
-                <div class="inline-scheme-btn" style="background: linear-gradient(135deg, #FFB743, #FF4D00);"
-                    onclick="features.slide.setScheme('default')" id="toolbar-scheme-default" title="Amarelo/Vermelho">
-                </div>
-                <div class="inline-scheme-btn" style="background: linear-gradient(135deg, #5271FF, #933EC5);"
-                    onclick="features.slide.setScheme('scheme2')" id="toolbar-scheme-scheme2" title="Azul/Roxo"></div>
-                <div class="inline-scheme-btn" style="background: linear-gradient(135deg, #35B729, #FF4D00);"
-                    onclick="features.slide.setScheme('scheme3')" id="toolbar-scheme-scheme3" title="Verde/Vermelho">
-                </div>
-            </div>
         </div>
 
         <!-- SOUND DRAWER -->
@@ -1683,33 +1269,7 @@
                 </svg>
             </button>
             <div id="queue-info-badge">0 na Fila</div>
-
-            <div id="queue-info-badge">0 na Fila</div>
-            <div id="balloon-input" class="temp-balloon top">Escreva o texto do slide aqui</div>
         </div>
-
-
-        <!-- LINKS DRAWER (New Grid) -->
-        <div id="links-drawer" class="links-drawer">
-            <div class="link-card" onclick="ui.showToast('Brevemente...')">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                <span>Slides Formação</span>
-            </div>
-            <div class="link-card" onclick="features.slide.openPortal()">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
-                </svg>
-                <span>Portal Futuro Digital</span>
-            </div>
-        </div>
-
-
     </footer>
 
     <!-- MODAL SYSTEM CONTAINER -->
@@ -1734,7 +1294,7 @@
          * 1. CONSTANTS & ASSETS
          *******************************************************/
         const BRANDS = {
-            'futuro': { light: 'https://i.imgur.com/L7wNgqt.png', dark: 'https://i.imgur.com/tYc9GgI.png', name: 'Futuro Digital' },
+            'futuro': { light: 'https://i.imgur.com/L7wNgqt.png', dark: 'https://i.imgur.com/9IkzQXi.png', name: 'Futuro Digital' },
             'passaporte': { light: 'https://i.imgur.com/Rzf5kQ3.png', dark: 'https://i.imgur.com/Mzwq7n0.png', name: 'Passaporte Competências' },
             'ia': { light: 'https://i.imgur.com/9qGRGAt.png', dark: 'https://i.imgur.com/QPifhum.png', name: 'IA para Todos' }
         };
@@ -1909,32 +1469,6 @@
                 this.applyState();
                 this.updateDisplay("Olá! Vamos começar?");
 
-                // Idle Detection for Zen Mode
-                let idleTimer;
-                const resetIdle = () => {
-                    if (document.body.classList.contains('idle')) {
-                        document.body.classList.remove('idle');
-                    }
-                    if (idleTimer) clearTimeout(idleTimer);
-
-                    if (state.mode === 'simple') {
-                        idleTimer = setTimeout(() => {
-                            // Only apply if still in simple mode
-                            if (state.mode === 'simple') {
-                                document.body.classList.add('idle');
-                            }
-                        }, 2000); // 2 seconds
-                    }
-                };
-
-                // Initialize idle check immediately
-                resetIdle();
-
-                document.addEventListener('mousemove', resetIdle);
-                document.addEventListener('keydown', resetIdle);
-                document.addEventListener('click', resetIdle);
-                document.addEventListener('touchstart', resetIdle);
-
                 // Event Listeners
                 document.addEventListener('click', (e) => {
                     if (!document.getElementById('logo-area').contains(e.target)) {
@@ -2017,49 +1551,6 @@
                 document.getElementById('btn-sound-drawer').classList.toggle('active');
             },
 
-            toggleLinkMenu() {
-                const drawer = document.getElementById('links-drawer');
-                const btn = document.getElementById('btn-links');
-                const inputWrap = document.querySelector('.input-wrapper');
-
-                const isOpening = !drawer.classList.contains('visible');
-
-                drawer.classList.toggle('visible', isOpening);
-                btn.classList.toggle('active', isOpening);
-
-                if (isOpening) {
-                    inputWrap.style.display = 'none'; // Hide input
-
-                    // Add click listener to close
-                    setTimeout(() => {
-                        const closeFn = (e) => {
-                            if (!drawer.contains(e.target) && !btn.contains(e.target)) {
-                                drawer.classList.remove('visible');
-                                btn.classList.remove('active');
-                                inputWrap.style.display = 'flex'; // Restore input
-                                document.removeEventListener('click', closeFn);
-                            }
-                        };
-                        document.addEventListener('click', closeFn);
-                    }, 0);
-                } else {
-                    inputWrap.style.display = 'flex'; // Restore input if toggled off
-                }
-            },
-
-            showToast(msg) {
-                const toast = document.createElement('div');
-                toast.innerText = msg;
-                toast.style.cssText = `
-                    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-                    background: rgba(0,0,0,0.8); color: white; padding: 10px 20px;
-                    border-radius: 20px; z-index: 2000; animation: fadeInOut 2s ease forwards;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.2); backdrop-filter: blur(5px);
-                `;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 2000);
-            },
-
             highlightSound(id, active) {
                 const btn = document.getElementById(`btn-${id}`);
                 if (btn) active ? btn.classList.add('sound-playing') : btn.classList.remove('sound-playing');
@@ -2082,21 +1573,6 @@
                     const el = document.getElementById(id);
                     if (el) el.classList.add('active');
                 });
-
-                const slideBtn = document.getElementById('btn-create-slide');
-                const linkBtn = document.getElementById('btn-links');
-                if (slideBtn) {
-                    if (state.brand === 'futuro') {
-                        slideBtn.classList.remove('hidden');
-                        linkBtn.classList.remove('hidden');
-                    } else {
-                        slideBtn.classList.add('hidden');
-                        linkBtn.classList.add('hidden');
-                        // Reset inline state
-                        document.getElementById('slide-inline-controls').classList.remove('visible');
-                        document.getElementById('btn-send').style.display = 'block';
-                    }
-                }
             },
 
             updateQueueBadge() {
@@ -2348,76 +1824,6 @@
                         AudioService.toggle('trophy');
                     }
                 }
-            },
-
-            slide: {
-                activeScheme: 'default',
-                active: false,
-                toggleInline() {
-                    const toolbarColors = document.getElementById('slide-colors-toolbar');
-                    const drawer = document.getElementById('links-drawer');
-
-                    if (drawer.classList.contains('visible')) ui.toggleLinkMenu();
-
-                    this.active = !this.active;
-
-                    const btn = document.getElementById('btn-create-slide');
-                    btn.classList.toggle('active', this.active);
-
-                    if (this.active) {
-                        // Force toolbar visible logic if needed, or just show colors
-                        document.getElementById('control-panel').classList.add('expanded'); // Reusing existing expanded logic
-                        toolbarColors.style.display = 'flex';
-                        ui.els.input.focus();
-                        this.setScheme(this.activeScheme);
-                    } else {
-                        toolbarColors.style.display = 'none';
-                        document.getElementById('control-panel').classList.remove('expanded');
-                        // Reset border
-                        if (ui.els.input) ui.els.input.style.borderColor = '';
-                    }
-                },
-                setScheme(scheme) {
-                    this.activeScheme = scheme;
-                    // Update selection in toolbar
-                    document.querySelectorAll('.inline-scheme-btn').forEach(btn => btn.classList.remove('active'));
-                    const btn = document.getElementById(`toolbar-scheme-${scheme}`);
-                    if (btn) btn.classList.add('active');
-
-                    // Visual feedback on input border
-                    const colors = {
-                        'default': '#FFB743',
-                        'scheme2': '#5271FF',
-                        'scheme3': '#35B729'
-                    };
-                    if (this.active && ui.els.input) {
-                        ui.els.input.style.borderColor = colors[scheme] || 'var(--glass-border)';
-                    }
-                },
-                create() {
-                    // Robust text retrieval
-                    let text = ui.els.input.innerText;
-
-                    // Cleanup any zero-width spaces or potential HTML artifacts
-                    text = text.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-
-                    if (!text) text = "Novo Slide";
-
-                    const data = {
-                        text: text,
-                        scheme: this.activeScheme
-                    };
-                    localStorage.setItem('slideData', JSON.stringify(data));
-                    window.location.href = 'futuro-digital.html';
-                },
-                openPortal() {
-                    const data = {
-                        text: "bit.ly/futurodigital",
-                        scheme: 'scheme2' // Green, Blue, Purple
-                    };
-                    localStorage.setItem('slideData', JSON.stringify(data));
-                    window.location.href = 'futuro-digital.html';
-                }
             }
         };
 
@@ -2436,18 +1842,7 @@
                 ui.els.input.focus();
             },
 
-            manualSubmit() {
-                // If Slide Mode is active, Create Slide instead of Projecting
-                if (features.slide.active) {
-                    features.slide.create();
-                    return;
-                }
-                const text = ui.els.input.innerText.trim();
-                if (!text) return;
-                this.showContent(text); // Use showContent to handle history
-                ui.els.input.innerHTML = ""; // Clear input after submission
-                ui.els.input.focus(); // Keep focus on input
-            },
+            manualSubmit() { this.processInput(); },
 
             showContent(text) {
                 // Add to history
