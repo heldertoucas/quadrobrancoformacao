@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quadro Vivo - Master Edition v2.0</title>
+    <title>Quadro Branco v2.2</title>
 
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
@@ -34,6 +34,8 @@
             --font-main: 'Montserrat', sans-serif;
             --font-size-base: 5rem;
             --modal-overlay: rgba(0, 0, 0, 0.6);
+            --expanded-bg: rgba(15, 32, 39, 0.95);
+            --input-bg: rgba(0, 0, 0, 0.2);
         }
 
         [data-theme="light"] {
@@ -46,6 +48,8 @@
             --glass-hover: rgba(0, 0, 0, 0.08);
             --accent-color: #005bea;
             --modal-overlay: rgba(255, 255, 255, 0.6);
+            --expanded-bg: rgba(255, 255, 255, 0.95);
+            --input-bg: rgba(0, 0, 0, 0.05);
         }
 
         /* --- 2. RESET & BASE --- */
@@ -151,7 +155,7 @@
         }
 
         #app-logo {
-            height: 90px;
+            height: 80px;
             width: auto;
             object-fit: contain;
             pointer-events: none;
@@ -289,6 +293,41 @@
             white-space: pre-wrap;
         }
 
+        /* Rich Content Overrides */
+        h1.rich-content {
+            font-weight: normal;
+            text-align: initial;
+            white-space: normal;
+            display: block;
+            width: 100%;
+        }
+
+        h1.rich-content b,
+        h1.rich-content strong {
+            font-weight: 900;
+        }
+
+        h1.rich-content i,
+        h1.rich-content em {
+            font-style: italic;
+        }
+
+        h1.rich-content u {
+            text-decoration: underline;
+        }
+
+        h1.rich-content ul,
+        h1.rich-content ol {
+            text-align: left;
+            margin: 0 auto;
+            display: inline-block;
+            padding-left: 2rem;
+        }
+
+        h1.rich-content li {
+            margin-bottom: 5px;
+        }
+
         /* Navigation Arrows */
         .nav-arrow {
             position: fixed;
@@ -380,7 +419,7 @@
         #control-panel.expanded {
             border-radius: 20px;
             padding: 20px;
-            background: rgba(15, 32, 39, 0.95);
+            background: var(--expanded-bg);
         }
 
         #control-panel:hover,
@@ -598,7 +637,7 @@
             overflow-y: auto;
             border: 1px solid var(--glass-border);
             border-radius: 8px;
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--input-bg);
         }
 
         .input-editor[placeholder]:empty:before {
@@ -1231,8 +1270,8 @@
             { id: 'success', color: 'var(--success-color)', icon: 'Check', label: 'Sucesso' },
             { id: 'error', color: 'var(--danger-color)', icon: 'X', label: 'Erro' },
             { id: 'drum', color: 'var(--warn-color)', icon: 'Drum', label: 'Tambores' },
-            { id: 'clap', color: 'var(--clap-color)', icon: 'Clap', label: 'Aplauso' },
-            { id: 'palmas', color: 'var(--clap-color)', icon: 'Clap', label: 'Palmas' },
+            { id: 'clap', color: 'var(--clap-color)', icon: 'Clap', label: 'Ovação' },
+            { id: 'palmas', color: 'var(--clap-color)', icon: 'Clap', label: 'Aplauso' },
             { id: 'pointUp', color: 'var(--success-color)', icon: 'Plus', label: '+1' },
             { id: 'pointDown', color: 'var(--danger-color)', icon: 'Minus', label: '-1' },
             { id: 'fanfare', color: 'var(--warn-color)', icon: 'Speaker', label: 'Fanfarra' },
@@ -1377,6 +1416,7 @@
             init() {
                 this.renderSoundDrawer();
                 this.applyState();
+                this.updateDisplay("Olá! Vamos começar?");
 
                 // Event Listeners
                 document.addEventListener('click', (e) => {
@@ -1403,17 +1443,28 @@
 
             renderSoundDrawer() {
                 const drawer = document.getElementById('sound-drawer');
+                const allowedLabels = ['clap', 'palmas', 'pointUp', 'pointDown'];
                 drawer.innerHTML = '<button class="submenu-close" onclick="ui.toggleSoundDrawer()" title="Fechar">×</button>' +
                     SOUND_METADATA.map(s => `
                     <button id="btn-${s.id}" class="tool-btn sound-drawer-btn" onclick="AudioService.toggle('${s.id}')" title="${s.label}">
                         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="stroke:${s.color}">${ICONS[s.icon]}</svg>
-                        <span>${s.label}</span>
+                        ${allowedLabels.includes(s.id) ? `<span>${s.label}</span>` : ''}
                     </button>
                 `).join('');
             },
 
             updateDisplay(text, isQR = false) {
-                this.els.mainText.innerText = text;
+                // Check for HTML to enable rich mode
+                const isHtml = /<[a-z][\s\S]*>/i.test(text) || text.includes('style=') || text.includes('<b>') || text.includes('<i>');
+
+                if (isHtml && !isQR) {
+                    this.els.mainText.classList.add('rich-content');
+                    this.els.mainText.innerHTML = text;
+                } else {
+                    this.els.mainText.classList.remove('rich-content');
+                    this.els.mainText.innerText = text;
+                }
+
                 this.els.mainText.classList.remove('hidden');
                 this.els.mainText.classList.add('visible');
 
@@ -1422,7 +1473,7 @@
                     this.els.qrWrapper.innerHTML = "";
                     const canvas = document.createElement('canvas');
                     this.els.qrWrapper.appendChild(canvas);
-                    new QRious({ element: canvas, value: text, size: 256, level: 'H' });
+                    new QRious({ element: canvas, value: (isHtml ? this.els.mainText.innerText : text), size: 256, level: 'H' });
                 } else {
                     this.els.qrContainer.style.display = 'none';
                 }
@@ -1511,7 +1562,7 @@
          *******************************************************/
         const features = {
             timer: {
-                setup: async () => {
+                async setup() {
                     if (state.timerInterval) {
                         clearInterval(state.timerInterval);
                         state.timerInterval = null;
@@ -1548,10 +1599,10 @@
                         }
                     }, 1000);
                 }
-            }, this: null, // Hack to fix object literal implicit this in start() call above is messy, better define functions outside
+            },
 
             dice: {
-                roll: () => {
+                roll() {
                     ui.els.mainText.innerHTML = `
                         <div class="dice-wrapper">
                             <div id="dice-result" class="dice-result">...</div>
@@ -1583,7 +1634,7 @@
             },
 
             picker: {
-                setup: async () => {
+                async setup() {
                     const text = await modal.show({
                         title: 'Sorteio Aleatório',
                         html: '<textarea class="modal-input" placeholder="Nomes separados por vírgula" rows="4"></textarea>'
@@ -1603,10 +1654,10 @@
                         }
                     }, 100);
                 }
-            }, return: null, // Syntax fix helper
+            },
 
             score: {
-                setup: async () => {
+                async setup() {
                     const sb = document.getElementById('scoreboard');
                     if (sb.style.display === 'flex') { sb.style.display = 'none'; return; }
 
@@ -1652,25 +1703,6 @@
                 }
             }
         };
-
-        // Fix logic binding
-        Object.keys(features).forEach(k => {
-            // Bind logic functions to their objects if needed, 
-            // but simpler to just define them purely without 'this' dependency or correctly
-        });
-
-        // RE-DEFINING FEATURES WITH CORRECT CONTEXT
-        // We override the previous definition to ensure 'this' correctness or use closure over 'features'
-        // Correct feature bindings
-        features.timer.setup = features.timer.setup.bind(features.timer);
-        features.timer.start = features.timer.start.bind(features.timer);
-        features.dice.roll = features.dice.roll.bind(features.dice);
-        features.picker.setup = features.picker.setup.bind(features.picker);
-        features.picker.run = features.picker.run.bind(features.picker);
-        features.score.setup = features.score.setup.bind(features.score);
-        features.score.build = features.score.build.bind(features.score);
-        features.score.update = features.score.update.bind(features.score);
-        features.score.checkWinner = features.score.checkWinner.bind(features.score);
 
         /*******************************************************
          * 6. MAIN CONTROLLER
