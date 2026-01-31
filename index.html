@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quadro Branco v2.2</title>
+    <title>Quadro Branco v2.4</title>
 
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
@@ -1603,38 +1603,58 @@
 
             dice: {
                 roll() {
-                    ui.els.mainText.innerHTML = `
-                        <div class="dice-wrapper">
-                            <div id="dice-result" class="dice-result">...</div>
-                            <div class="dice-visuals dice-shake"><span id="d1">⚀</span><span id="d2">⚀</span></div>
-                        </div>`;
-                    ui.updateDisplay(ui.els.mainText.innerText); // Force visibility logic
-                    ui.els.mainText.classList.add('visible');
+                    // TOGGLE: If dice result is already visible, clear screen.
+                    if (document.querySelector('.dice-wrapper') && ui.els.mainText.classList.contains('visible')) {
+                        app.clear();
+                        return;
+                    }
+
+                    // V1-Style: Reset UI directly
+                    ui.els.mainText.classList.remove('hidden');
+                    ui.els.mainText.style.display = 'block';
                     ui.els.qrContainer.style.display = 'none';
                     document.getElementById('scoreboard').style.display = 'none';
+                    ui.els.mainText.classList.remove('rich-content');
 
-                    const chars = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-                    let rolls = 0;
-                    const interval = setInterval(() => {
-                        const v1 = Math.floor(Math.random() * 6);
-                        const v2 = Math.floor(Math.random() * 6);
-                        document.getElementById('d1').innerText = chars[v1];
-                        document.getElementById('d2').innerText = chars[v2];
-                        if (++rolls >= 20) {
-                            clearInterval(interval);
-                            document.querySelector('.dice-visuals').classList.remove('dice-shake');
-                            const res = document.getElementById('dice-result');
-                            res.innerText = (v1 + v2 + 2);
-                            res.classList.add('show');
-                            AudioService.toggle('success');
-                            ui.confetti();
-                        }
-                    }, 80);
+                    setTimeout(() => {
+                        const diceChars = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+                        ui.els.mainText.innerHTML = `
+                            <div class="dice-wrapper">
+                                <div id="dice-result" class="dice-result">A lançar...</div>
+                                <div class="dice-visuals dice-shake"><span id="d1"></span><span id="d2"></span></div>
+                            </div>`;
+
+                        void ui.els.mainText.offsetWidth; // Force reflow
+                        ui.els.mainText.classList.add('visible');
+
+                        let rolls = 0;
+                        const interval = setInterval(() => {
+                            const v1 = Math.floor(Math.random() * 6);
+                            const v2 = Math.floor(Math.random() * 6);
+                            document.getElementById('d1').innerText = diceChars[v1];
+                            document.getElementById('d2').innerText = diceChars[v2];
+                            if (++rolls >= 20) {
+                                clearInterval(interval);
+                                document.querySelector('.dice-visuals').classList.remove('dice-shake');
+                                const res = document.getElementById('dice-result');
+                                if (res) {
+                                    res.innerText = (v1 + v2 + 2);
+                                    res.classList.add('show');
+                                    AudioService.toggle('success');
+                                    ui.confetti();
+                                }
+                            }
+                        }, 80);
+                    }, 10);
                 }
             },
 
             picker: {
                 async setup() {
+                    // TOGGLE: If showing a picker result, toggle off/clear.
+                    // Strictly speaking V1 picker prompts first, but if we are in a "result state", clicking it again should clear.
+                    // However, standard behavior is to always prompt for a new one.
+
                     const text = await modal.show({
                         title: 'Sorteio Aleatório',
                         html: '<textarea class="modal-input" placeholder="Nomes separados por vírgula" rows="4"></textarea>'
@@ -1643,16 +1663,29 @@
                 },
                 run(names) {
                     if (names.length < 2) return;
-                    ui.updateDisplay("Sorteando...");
-                    let spins = 0;
-                    const interval = setInterval(() => {
-                        ui.els.mainText.innerText = names[Math.floor(Math.random() * names.length)];
-                        if (++spins >= 30) {
-                            clearInterval(interval);
-                            AudioService.toggle('fanfare');
-                            ui.confetti();
-                        }
-                    }, 100);
+
+                    // V1-Style: Reset UI directly
+                    ui.els.mainText.classList.remove('hidden');
+                    ui.els.mainText.style.display = 'block';
+                    ui.els.qrContainer.style.display = 'none';
+                    document.getElementById('scoreboard').style.display = 'none';
+                    ui.els.mainText.classList.remove('rich-content');
+
+                    setTimeout(() => {
+                        ui.els.mainText.innerText = "Sorteando...";
+                        void ui.els.mainText.offsetWidth;
+                        ui.els.mainText.classList.add('visible');
+
+                        let spins = 0;
+                        const interval = setInterval(() => {
+                            ui.els.mainText.innerText = names[Math.floor(Math.random() * names.length)];
+                            if (++spins >= 30) {
+                                clearInterval(interval);
+                                AudioService.toggle('fanfare');
+                                ui.confetti();
+                            }
+                        }, 100);
+                    }, 10);
                 }
             },
 
