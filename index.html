@@ -151,7 +151,7 @@
         }
 
         #app-logo {
-            height: 45px;
+            height: 90px;
             width: auto;
             object-fit: contain;
             pointer-events: none;
@@ -404,6 +404,37 @@
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        #rich-toolbar {
+            display: none;
+            gap: 5px;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--glass-border);
+            animation: fadeInMenu 0.3s ease;
+        }
+
+        #control-panel.expanded #rich-toolbar {
+            display: flex;
+        }
+
+        .fmt-btn {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .fmt-btn:hover {
+            background: var(--glass-hover);
+            opacity: 1;
+        }
+
         #control-panel:focus-within #toolbar,
         #control-panel.expanded #toolbar,
         #control-panel.drawer-open #toolbar {
@@ -504,7 +535,7 @@
             position: relative;
         }
 
-        textarea {
+        .input-editor {
             flex-grow: 1;
             padding: 8px 10px;
             border: none;
@@ -514,19 +545,24 @@
             outline: none;
             font-family: inherit;
             text-align: left;
-            resize: none;
-            height: 40px;
-            transition: height 0.3s ease;
-            overflow: hidden;
+            min-height: 40px;
+            max-height: 40px;
+            transition: all 0.3s ease;
+            overflow-y: hidden;
             line-height: 1.5;
+            white-space: pre-wrap;
         }
 
-        #control-panel.expanded textarea {
-            height: 150px;
+        #control-panel.expanded .input-editor {
+            max-height: 200px;
             overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
         }
 
-        textarea::placeholder {
+        .input-editor[placeholder]:empty:before {
+            content: attr(placeholder);
             color: rgba(150, 150, 150, 0.7);
         }
 
@@ -1035,14 +1071,37 @@
             </button>
         </div>
 
+        <div id="rich-toolbar">
+            <button class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('bold', false, null)"
+                title="Negrito"><b>B</b></button>
+            <button class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('italic', false, null)"
+                title="Itálico"><i>I</i></button>
+            <button class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('underline', false, null)"
+                title="Sublinhado"><u>U</u></button>
+            <div class="separator" style="height: 16px;"></div>
+            <button class="fmt-btn"
+                onmousedown="event.preventDefault(); document.execCommand('insertUnorderedList', false, null)"
+                title="Lista">List</button>
+            <button class="fmt-btn"
+                onmousedown="event.preventDefault(); document.execCommand('insertOrderedList', false, null)"
+                title="Numeração">1. 2.</button>
+            <div class="separator" style="height: 16px;"></div>
+            <button class="fmt-btn"
+                onmousedown="event.preventDefault(); document.execCommand('justifyLeft', false, null)"
+                title="Esquerda">⇤</button>
+            <button class="fmt-btn"
+                onmousedown="event.preventDefault(); document.execCommand('justifyCenter', false, null)"
+                title="Centro">↔</button>
+        </div>
+
         <!-- SOUND DRAWER -->
         <div id="sound-drawer">
             <!-- Dynamically populated via JS -->
         </div>
 
         <div class="input-wrapper">
-            <textarea id="input-text" rows="1" placeholder="Escreva... (Shift+Enter para Fila)"
-                autocomplete="off"></textarea>
+            <div id="input-text" class="input-editor" contenteditable="true"
+                placeholder="Escreva... (Shift+Enter para Fila)" spellcheck="false"></div>
             <button id="btn-send" onclick="app.manualSubmit()" title="Projetar (Ctrl+Enter)"
                 aria-label="Projetar Texto">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -1273,7 +1332,6 @@
                 drawer.innerHTML = SOUND_METADATA.map(s => `
                     <button id="btn-${s.id}" class="tool-btn sound-drawer-btn" onclick="AudioService.toggle('${s.id}')" title="${s.label}">
                         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="stroke:${s.color}">${ICONS[s.icon]}</svg>
-                        <span>${s.label}</span>
                     </button>
                 `).join('');
             },
@@ -1305,12 +1363,13 @@
 
             closeQR() {
                 this.els.qrContainer.style.display = 'none';
+                this.els.input.focus(); // Restore focus to prevent toolbar collapse
             },
 
             toggleExpand() {
                 state.isExpanded = !state.isExpanded;
                 document.getElementById('control-panel').classList.toggle('expanded', state.isExpanded);
-                this.els.input.placeholder = state.isExpanded ? "Modo Texto Longo..." : "Escreva... (Shift+Enter para Fila)";
+                this.els.input.setAttribute('placeholder', state.isExpanded ? "Modo Texto Rico..." : "Escreva... (Shift+Enter para Fila)");
                 this.els.input.focus();
             },
 
@@ -1518,9 +1577,46 @@
             }
         };
 
-        // Fix loose functions from features object context execution
-        features.timer.start = features.timer.start.bind(features.timer);
-        features.picker.run = features.picker.run.bind(features.picker);
+        // Fix logic binding
+        Object.keys(features).forEach(k => {
+            // Bind logic functions to their objects if needed, 
+            // but simpler to just define them purely without 'this' dependency or correctly
+        });
+
+        // RE-DEFINING FEATURES WITH CORRECT CONTEXT
+        // We override the previous definition to ensure 'this' correctness or use closure over 'features'
+        features.timer.setup = async function () {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+                document.getElementById('timer-overlay').style.display = 'none';
+                return;
+            }
+            const min = await modal.show({
+                title: 'Definir Timer',
+                html: '<input type="number" class="modal-input" placeholder="Minutos (ex: 5)" value="5" min="1">'
+            });
+            if (min) features.timer.start(parseInt(min));
+        };
+
+        features.picker.setup = async function () {
+            const text = await modal.show({
+                title: 'Sorteio Aleatório',
+                html: '<textarea class="modal-input" placeholder="Nomes separados por vírgula" rows="4"></textarea>'
+            });
+            if (text) features.picker.run(text.split(',').map(s => s.trim()).filter(Boolean));
+        };
+
+        features.score.setup = async function () {
+            const sb = document.getElementById('scoreboard');
+            if (sb.style.display === 'flex') { sb.style.display = 'none'; return; }
+
+            const num = await modal.show({
+                title: 'Configurar Placar',
+                html: '<input type="number" class="modal-input" placeholder="Número de Equipas (2-6)" min="2" max="6" value="2">'
+            });
+            if (num) features.score.build(parseInt(num));
+        };
 
         /*******************************************************
          * 6. MAIN CONTROLLER
@@ -1531,8 +1627,8 @@
             setBrand(b) { state.brand = b; localStorage.setItem('qv_brand', b); ui.applyState(); },
 
             processInput() {
-                const val = ui.els.input.value.trim();
-                ui.els.input.value = "";
+                const val = ui.els.input.innerText.trim() ? ui.els.input.innerHTML : "";
+                ui.els.input.innerHTML = "";
                 if (val) this.showContent(val);
                 ui.els.input.focus();
             },
@@ -1540,20 +1636,25 @@
             manualSubmit() { this.processInput(); },
 
             showContent(text) {
+                // Determine if text handles HTML
+                const isHtml = text.includes('<');
+                const cleanText = isHtml ? text : text; // Simplify for now
+
                 // Add to history
                 if (state.history[state.history.length - 1] !== text) {
                     state.history.push(text);
                     state.historyIndex = state.history.length - 1;
                 }
-                ui.updateDisplay(text);
+                ui.updateDisplay(text, false); // Pass false for isQR 
+                ui.els.mainText.innerHTML = text; // Ensure HTML rendering
                 ui.navControls();
             },
 
             addToQueue() {
-                const val = ui.els.input.value.trim();
+                const val = ui.els.input.innerText.trim() ? ui.els.input.innerHTML : "";
                 if (val) {
                     state.queue.push(val);
-                    ui.els.input.value = "";
+                    ui.els.input.innerHTML = "";
                     ui.updateQueueBadge();
                     AudioService.toggle('pointUp'); // Feedback sound
                 }
