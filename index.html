@@ -1907,7 +1907,37 @@
             init() {
                 this.renderSoundDrawer();
                 this.applyState();
-                this.updateDisplay("Olá! Vamos começar?");
+                // --- URL Params Handling ---
+                const params = new URLSearchParams(window.location.search);
+
+                // 1. Configs
+                if (params.has('program')) app.setBrand(params.get('program'));
+                if (params.has('mode')) app.setMode(params.get('mode'));
+                if (params.has('theme')) app.setTheme(params.get('theme'));
+                if (params.has('sons')) this.toggleSoundDrawer();
+
+                // 2. Timer (Overlay - Independent)
+                if (params.has('timer')) {
+                    const min = parseInt(params.get('timer'));
+                    if (!isNaN(min)) features.timer.start(min);
+                }
+
+                // 3. Main View (Mutually Exclusive)
+                if (params.has('placar')) {
+                    const n = parseInt(params.get('placar'));
+                    if (!isNaN(n)) features.score.build(n);
+                } else if (params.has('dados')) {
+                    features.dice.roll();
+                } else if (params.has('sorteio')) {
+                    const names = params.get('sorteio').split(',').map(s => s.trim()).filter(Boolean);
+                    if (names.length > 0) features.picker.run(names);
+                } else if (params.has('qrcode')) {
+                    features.setView('qr', params.get('qrcode'));
+                } else if (params.has('text')) {
+                    app.showContent(params.get('text'));
+                } else {
+                    this.updateDisplay("Olá! Vamos começar?");
+                }
 
                 // Idle Detection for Zen Mode
                 let idleTimer;
