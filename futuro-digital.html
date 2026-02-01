@@ -638,6 +638,23 @@
             backBtn.onclick = () => window.location.href = 'index.html';
             document.body.appendChild(backBtn);
 
+            // 1.1 Botão Ecrã Inteiro
+            const fsBtn = document.createElement('div');
+            fsBtn.className = 'back-btn'; // Reusing base style
+            fsBtn.style.left = 'auto';
+            fsBtn.style.right = '3%'; // Position opposite
+            fsBtn.setAttribute('title', 'Ecrã Inteiro');
+            // Four corners icon similar to request
+            fsBtn.innerHTML = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+            fsBtn.onclick = () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(e => console.log(e));
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            };
+            document.body.appendChild(fsBtn);
+
             // Helper: Aplicar Tema
             const applyTheme = (scheme) => {
                 const img = document.querySelector('.team-image img');
