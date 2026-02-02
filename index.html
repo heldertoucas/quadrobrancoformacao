@@ -573,6 +573,38 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
+        /* --- STARTUP MESSAGE --- */
+        #startup-message {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            text-align: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: fit-content;
+            max-width: 90%;
+            pointer-events: none;
+        }
+
+        #startup-message.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* --- 4. CONTROL PANEL --- */
         #control-panel {
             position: absolute;
@@ -1712,6 +1744,11 @@
 
     </footer>
 
+    <div id="startup-message">
+        Criado por Hélder Touças e Vanessa Veríssimo para os programas Passaporte Competências Digitais | Futuro Digital
+        | IA para Todos da Câmara Municipal de Lisboa
+    </div>
+
     <!-- MODAL SYSTEM CONTAINER -->
     <div id="modal-overlay" class="modal-overlay" aria-hidden="true">
         <div class="glass-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -1906,6 +1943,7 @@
 
             init() {
                 this.renderSoundDrawer();
+                this.showStartupMessage();
                 this.applyState();
                 // --- URL Params Handling ---
                 const params = new URLSearchParams(window.location.search);
@@ -2154,6 +2192,21 @@
 
             confetti() {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#4facfe', '#00f2fe', '#ffffff'] });
+            },
+
+            showStartupMessage() {
+                const msg = document.getElementById('startup-message');
+                if (msg) {
+                    // Show after a brief delay ensuring page load
+                    setTimeout(() => msg.classList.add('visible'), 100);
+
+                    // Hide after 3 seconds
+                    setTimeout(() => {
+                        msg.classList.remove('visible');
+                        // Optional: remove from DOM to keep it clean
+                        setTimeout(() => msg.remove(), 1000);
+                    }, 3100);
+                }
             }
         };
 
