@@ -50,7 +50,7 @@
         }
 
         .main-title h2 {
-            font-size: 5.4vw;
+            font-size: clamp(1.5rem, 4vw, 4.5rem);
             font-weight: 900;
             color: #000;
             line-height: 1.2;
@@ -364,10 +364,6 @@
 
         /* Responsividade */
         @media (max-width: 1400px) {
-            .main-title h2 {
-                font-size: 90px;
-            }
-
             .team-image-container {
                 width: 450px;
                 height: 450px;
@@ -375,10 +371,6 @@
         }
 
         @media (max-width: 1024px) {
-            .main-title h2 {
-                font-size: 70px;
-            }
-
             .team-image-container {
                 width: 350px;
                 height: 350px;
@@ -408,10 +400,6 @@
             .main-title {
                 left: 20px;
                 top: 40%;
-            }
-
-            .main-title h2 {
-                font-size: 50px;
             }
 
             .team-image-container {
