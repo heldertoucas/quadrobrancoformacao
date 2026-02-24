@@ -4,7 +4,18 @@ Este repositório contém duas ferramentas interativas desenvolvidas para dinami
 
 Ambas as ferramentas foram desenhadas com foco na **portabilidade** e facilidade de uso em qualquer contexto de sala de aula ou formação online.
 
-## 🚀 Portabilidade
+---
+
+## Enquadramento e Autoria
+
+Este projeto foi desenvolvido com o foco principal de criar **recursos pedagógicos ágeis e acessíveis** para apoiar formadores, professores e facilitadores nas suas sessões de formação, quer em regime presencial, quer online.
+
+* **Autoria e Desenvolvimento:** Desenvolvido por **Hélder Toucas** e **Vanessa Veríssimo**.
+* **Objetivo de Utilização:** Disponibilizar aos formadores um conjunto de utilitários interativos (temporizadores, sorteios, painéis de pontuação, etc.) prontos a usar. O foco central é eliminar barreiras tecnológicas: as ferramentas não exigem instalação, permissões de administrador, dependências complexas ou sequer ligação à internet (se os ficheiros forem guardados e executados localmente).
+* **Público-Alvo e Distribuição:** Destina-se a profissionais de educação que procurem dinâmicas de apoio visual. O projeto (código e ficheiros HTML) pode ser descarregado, partilhado e utilizado livremente para enriquecer a experiência formativa.
+
+
+## Portabilidade
 
 O conceito chave destas ferramentas é a simplicidade de distribuição e execução:
 
@@ -15,7 +26,7 @@ O conceito chave destas ferramentas é a simplicidade de distribuição e execu�
 
 ---
 
-## 🛠️ Parâmetros URL
+## Parâmetros URL
 
 Para facilitar a preparação das aulas, é possível configurar o estado inicial de ambas as ferramentas através de argumentos no URL. Isto permite criar links ou atalhos pré-configurados para diferentes momentos da formação.
 
