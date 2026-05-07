@@ -8,5 +8,5 @@ This file tracks all major tracks for the project. Each track has its own detail
   *Link: [./tracks/melhorias_20260507/](./tracks/melhorias_20260507/)*
 ---
 
-- [ ] **Track: Sistema de Votação Visual (Polls)**
+- [x] **Track: Sistema de VotaÃ§Ã£o Visual (Polls)**
 *Link: [./tracks/polls_20260507/](./tracks/polls_20260507/)*

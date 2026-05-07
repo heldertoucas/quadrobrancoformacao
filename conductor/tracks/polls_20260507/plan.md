@@ -16,5 +16,5 @@
 - [x] Task: Implementar botão "Apurar", destacando a opção vencedora com recurso a Confetti e som.
 
 ## Phase 4: Refinement
-- [ ] Task: Testar responsividade em ecrãs móveis (evitar sobreposições).
-- [ ] Task: Garantir que as cores das barras se adaptam aos temas (Neon, Oceano, etc.).
+- [x] Task: Testar responsividade em ecrãs móveis (evitar sobreposições).
+- [x] Task: Garantir que as cores das barras se adaptam aos temas (Neon, Oceano, etc.).
