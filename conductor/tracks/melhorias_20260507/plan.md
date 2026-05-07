@@ -5,8 +5,8 @@
 - [x] Task: Substituir links CDN por blocos <script> inline no index.html.
 
 ## Phase 2: Accessibility (A11y)
-- [ ] Task: Implementar Focus Trap no `ModalSystem`.
-- [ ] Task: Adicionar event listener global para tecla 'Escape' (fecho de modais).
+- [x] Task: Implementar Focus Trap no `ModalSystem`.
+- [x] Task: Adicionar event listener global para tecla 'Escape' (fecho de modais).
 
 ## Phase 3: UX Refinement
 - [ ] Task: Identificar conflito de layout em ecrãs móveis (<768px).

@@ -2102,12 +2102,37 @@ Based on jsqrencode | (C) 2010 tz@execpc.com | GPL v3 License
                 this.body = document.getElementById('modal-body');
                 this.btnConfirm = document.getElementById('modal-confirm');
                 this.btnCancel = document.getElementById('modal-cancel');
+                this.lastFocusedElement = null;
 
                 this.btnCancel.onclick = () => this.close();
                 this.resolvePromise = null;
+
+                // Handle Tab for Focus Trap and Escape for closing
+                this.overlay.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') this.close(null);
+                    if (e.key === 'Tab') {
+                        const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+                        const content = this.overlay.querySelectorAll(focusableElements);
+                        const first = content[0];
+                        const last = content[content.length - 1];
+
+                        if (e.shiftKey) { // Shift + Tab
+                            if (document.activeElement === first) {
+                                last.focus();
+                                e.preventDefault();
+                            }
+                        } else { // Tab
+                            if (document.activeElement === last) {
+                                first.focus();
+                                e.preventDefault();
+                            }
+                        }
+                    }
+                });
             }
 
             show({ title, html, confirmText = 'Confirmar', showCancel = true }) {
+                this.lastFocusedElement = document.activeElement;
                 this.title.innerText = title;
                 this.body.innerHTML = html;
                 this.btnConfirm.innerText = confirmText;
@@ -2115,30 +2140,32 @@ Based on jsqrencode | (C) 2010 tz@execpc.com | GPL v3 License
                 this.overlay.classList.add('open');
                 this.overlay.setAttribute('aria-hidden', 'false');
 
-                // Focus trap logic could be added here
-                const input = this.body.querySelector('input');
-                if (input) input.focus();
-                else this.btnConfirm.focus();
+                // Initial focus
+                setTimeout(() => {
+                    const input = this.body.querySelector('input, textarea');
+                    if (input) input.focus();
+                    else this.btnConfirm.focus();
+                }, 100);
 
                 return new Promise((resolve) => {
                     this.resolvePromise = resolve;
                     this.btnConfirm.onclick = () => {
                         const field = this.body.querySelector('input, textarea');
                         const val = field ? field.value : true;
-                        this.close();
-                        resolve(val);
+                        this.close(val);
                     };
-                    // Extend cancel to resolve false/null
-                    this.btnCancel.onclick = () => {
-                        this.close();
-                        resolve(null);
-                    };
+                    this.btnCancel.onclick = () => this.close(null);
                 });
             }
 
-            close() {
+            close(val = null) {
                 this.overlay.classList.remove('open');
                 this.overlay.setAttribute('aria-hidden', 'true');
+                if (this.resolvePromise) {
+                    this.resolvePromise(val);
+                    this.resolvePromise = null;
+                }
+                if (this.lastFocusedElement) this.lastFocusedElement.focus();
             }
         }
         const modal = new ModalSystem();
