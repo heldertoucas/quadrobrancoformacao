@@ -9,9 +9,9 @@
 - [x] Task: Adicionar event listener global para tecla 'Escape' (fecho de modais).
 
 ## Phase 3: UX Refinement
-- [ ] Task: Identificar conflito de layout em ecrãs móveis (<768px).
-- [ ] Task: Ajustar z-index e margens no CSS do modo 'simple/idle'.
-- [ ] Task: Implementar scroll ou ajuste de altura no menu mobile para acesso a todas as opções.
+- [x] Task: Identificar conflito de layout em ecrãs móveis (<768px).
+- [x] Task: Ajustar z-index e margens no CSS do modo 'simple/idle'.
+- [x] Task: Implementar scroll ou ajuste de altura no menu mobile para acesso a todas as opções.
 
 ## Phase 4: Final Validation
 - [ ] Task: Testar funcionamento offline (simulado).
