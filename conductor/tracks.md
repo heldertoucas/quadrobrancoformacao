@@ -10,3 +10,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Sistema de Votação Visual (Polls)**
 *Link: [./tracks/polls_20260507/](./tracks/polls_20260507/)*
+
+---
+
+- [ ] **Track: Dual Screen & Ink Overlay**
+*Link: [./tracks/dualscreen_ink_20260507/](./tracks/dualscreen_ink_20260507/)*
+
