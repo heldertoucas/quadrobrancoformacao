@@ -5,12 +5,12 @@ Este documento detalha o roteiro de evolução estética e funcional para a vers
 
 ---
 
-## 🏗️ 1. Identidade Visual e "Glassmorphism"
+## 🏗️ 1. Identidade Visual e "Glassmorphism" [✅ IMPLEMENTADO]
 *Melhoria da base estética para maior profundidade e contraste.*
-- **Bordas Gradientes:** Substituir bordas sólidas por gradientes lineares (branco opaco para transparente) para simular reflexos de luz realistas nas arestas do vidro.
-- **Textura de Ruído (Grain):** Adicionar uma camada de ruído visual quase impercetível aos elementos de vidro para aumentar a sensação de materialidade.
-- **Contraste Dinâmico:** Ajuste automático da opacidade do vidro com base no brilho do tema selecionado para garantir legibilidade máxima.
-- **Otimização de Blur:** Implementar fallbacks inteligentes para dispositivos com menor capacidade de processamento gráfico, garantindo fluidez em qualquer hardware.
+- [✅] **Bordas Gradientes:** Substituir bordas sólidas por gradientes lineares (branco opaco para transparente) para simular reflexos de luz realistas nas arestas do vidro.
+- [✅] **Textura de Ruído (Grain):** Adicionar uma camada de ruído visual quase impercetível aos elementos de vidro para aumentar a sensação de materialidade.
+- [✅] **Contraste Dinâmico:** Ajuste automático da opacidade do vidro com base no brilho do tema selecionado para garantir legibilidade máxima.
+- [✅] **Otimização de Blur:** Implementar fallbacks inteligentes para dispositivos com menor capacidade de processamento gráfico, garantindo fluidez em qualquer hardware.
 
 ## ✍️ 2. Tipografia e Escala Dinâmica
 *Refinamento editorial para transformar a leitura num prazer visual.*
@@ -42,9 +42,9 @@ Este documento detalha o roteiro de evolução estética e funcional para a vers
 - **Indicadores de Estado Pulsantes:** Feedback visual contínuo em ferramentas ativas (ex: Timer ligado, Emissão ativa).
 - **Botão de Envio Inteligente:** Integração do contador de fila num indicador de progresso circular (badge integrado) no próprio botão de ação.
 
-## 🎨 6. Temas, Marcas e Coesão
+## 🎨 6. Temas, Marcas e Coesão [🚧 PARCIALMENTE IMPLEMENTADO]
 *Imersão total na identidade do programa de formação.*
-- **Morphing de Cor:** Transições suaves de 1 segundo entre temas (CSS Transitions) para evitar saltos visuais bruscos e dar sofisticação.
+- [✅] **Morphing de Cor:** Transições suaves de 1 segundo entre temas (CSS Transitions) para evitar saltos visuais bruscos e dar sofisticação.
 - **Texturas Temáticas Imersivas:**
     - **Sketch:** Papel granulado real e efeito de traço trémulo (jitter) nos elementos de UI.
     - **8-bit:** Filtro de *scanlines* CRT e grelha de pixéis subtil.
