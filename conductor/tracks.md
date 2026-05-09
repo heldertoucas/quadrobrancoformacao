@@ -69,5 +69,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Cinematografia e Morphing**
+- [x] **Track: Cinematografia e Morphing**
 *Link: [./tracks/cinematografia_morphing_20260509/](./tracks/cinematografia_morphing_20260509/)*
