@@ -419,6 +419,7 @@ const ui = {
         this.els.mainText.style.textAlign = state.textAlignment;
 
         this.updateFormatButtons();
+        if (features.ink.active) features.ink.renderPalette();
 
         const slideBtn = document.getElementById('btn-create-slide');
         const linkBtn = document.getElementById('btn-links');

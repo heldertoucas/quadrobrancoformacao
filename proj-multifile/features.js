@@ -406,11 +406,10 @@ const features = {
 
     ink: {
         active: false,
-        color: '#ff0000',
         isDrawing: false,
         ctx: null,
-        lastX: 0,
-        lastY: 0,
+        points: [],
+        _lastMidPoint: null,
         setup() {
             const canvas = document.getElementById('ink-canvas');
             if (!this.ctx) {
@@ -430,13 +429,15 @@ const features = {
         resize() {
             const canvas = document.getElementById('ink-canvas');
             const dpr = window.devicePixelRatio || 1;
+            const temp = this.ctx ? this.ctx.getImageData(0, 0, canvas.width, canvas.height) : null;
             canvas.width = window.innerWidth * dpr;
             canvas.height = window.innerHeight * dpr;
             canvas.style.width = window.innerWidth + 'px';
             canvas.style.height = window.innerHeight + 'px';
             if (this.ctx) {
                 this.ctx.scale(dpr, dpr);
-                this.setColor(this.color); // Re-apply settings after scale
+                if (temp) this.ctx.putImageData(temp, 0, 0);
+                this.applyBrushSettings();
             }
         },
         toggle() {
@@ -448,46 +449,129 @@ const features = {
             document.getElementById('btn-ink').classList.toggle('active', this.active);
             if (this.active) {
                 this.resize();
-                this.setColor(this.color);
+                this.renderPalette();
+                this.applyBrushSettings();
             }
         },
-        start(e) { this.isDrawing = true; [this.lastX, this.lastY] = [e.clientX, e.clientY]; },
+        renderPalette() {
+            const container = document.getElementById('ink-palette');
+            if (!container) return;
+            const colors = PALETTES[state.theme] || PALETTES.dark;
+            
+            // Set default color if current one not in palette and not highlighter
+            if (!colors.includes(state.inkColor) && !state.isInkHighlighter) {
+                state.inkColor = colors[0];
+            }
+
+            container.innerHTML = colors.map(c => `
+                <div class="ink-color ${state.inkColor === c ? 'active' : ''}" 
+                     id="ink-col-${c.replace('#', '')}" 
+                     style="background:${c};" 
+                     onclick="features.ink.setColor('${c}')"></div>
+            `).join('');
+        },
+        start(e) {
+            this.isDrawing = true;
+            const pt = { x: e.clientX, y: e.clientY };
+            this.points = [pt];
+            this._lastMidPoint = pt;
+            this.drawPoint(pt);
+        },
+        drawPoint(pt) {
+            this.ctx.beginPath();
+            this.ctx.arc(pt.x, pt.y, this.ctx.lineWidth / 2, 0, Math.PI * 2);
+            this.ctx.fill();
+        },
         draw(e) {
             if (!this.isDrawing) return;
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.lastX, this.lastY);
-            this.ctx.lineTo(e.clientX, e.clientY);
-            this.ctx.stroke();
-            if (state.channel) {
-                state.channel.postMessage({
-                    type: 'ink_stroke',
-                    from: { x: this.lastX, y: this.lastY },
-                    to: { x: e.clientX, y: e.clientY },
-                    color: this.ctx.strokeStyle,
-                    width: this.ctx.lineWidth,
-                    op: this.ctx.globalCompositeOperation
-                });
+            const pt = { x: e.clientX, y: e.clientY };
+            this.points.push(pt);
+
+            if (this.points.length > 2) {
+                const lastIdx = this.points.length - 1;
+                const p1 = this.points[lastIdx - 1];
+                const p2 = this.points[lastIdx];
+                const midPoint = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(this._lastMidPoint.x, this._lastMidPoint.y);
+                this.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+                this.ctx.stroke();
+
+                if (state.channel) {
+                    state.channel.postMessage({
+                        type: 'ink_stroke_v2',
+                        from: this._lastMidPoint,
+                        control: p1,
+                        to: midPoint,
+                        color: this.ctx.strokeStyle,
+                        width: this.ctx.lineWidth,
+                        op: this.ctx.globalCompositeOperation,
+                        glow: this.ctx.shadowBlur > 0
+                    });
+                }
+                this._lastMidPoint = midPoint;
             }
-            [this.lastX, this.lastY] = [e.clientX, e.clientY];
         },
-        stop() { this.isDrawing = false; },
-        setColor(c) {
-            this.color = c;
-            this.ctx.strokeStyle = c;
-            this.ctx.lineWidth = 4;
+        stop() { this.isDrawing = false; this.points = []; },
+        applyBrushSettings() {
+            if (!this.ctx) return;
+            const isDark = ['dark', 'neon', 'ocean', 'sunset', 'gameboy', '8bit'].includes(state.theme);
+
             this.ctx.globalCompositeOperation = 'source-over';
             this.ctx.lineCap = 'round';
             this.ctx.lineJoin = 'round';
-            document.querySelectorAll('.ink-color').forEach(el => el.classList.remove('active'));
-            const btn = document.getElementById(`ink-col-${c.replace('#', '')}`);
-            if (btn) btn.classList.add('active');
+
+            if (state.isInkHighlighter) {
+                const hex = state.inkColor;
+                const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+                this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`;
+                this.ctx.lineWidth = 40;
+                this.ctx.shadowBlur = 0;
+            } else {
+                this.ctx.strokeStyle = state.inkColor;
+                this.ctx.lineWidth = 4;
+                if (isDark && state.theme === 'neon') {
+                    this.ctx.shadowBlur = 15;
+                    this.ctx.shadowColor = state.inkColor;
+                } else {
+                    this.ctx.shadowBlur = 0;
+                }
+            }
+            this.ctx.fillStyle = this.ctx.strokeStyle;
+        },
+        setColor(c) {
+            state.inkColor = c;
+            state.isInkHighlighter = false;
+            this.applyBrushSettings();
+            this.renderPalette();
+            document.getElementById('ink-pen').classList.add('active');
+            document.getElementById('ink-eraser').classList.remove('active');
+            document.getElementById('ink-highlighter').classList.remove('active');
+        },
+        setPen() {
+            state.isInkHighlighter = false;
+            this.applyBrushSettings();
+            document.getElementById('ink-pen').classList.add('active');
+            document.getElementById('ink-highlighter').classList.remove('active');
+            document.getElementById('ink-eraser').classList.remove('active');
+            this.renderPalette();
+        },
+        setHighlighter() {
+            state.isInkHighlighter = !state.isInkHighlighter;
+            this.applyBrushSettings();
+            document.getElementById('ink-highlighter').classList.toggle('active', state.isInkHighlighter);
+            document.getElementById('ink-pen').classList.toggle('active', !state.isInkHighlighter);
             document.getElementById('ink-eraser').classList.remove('active');
         },
         setEraser() {
             this.ctx.globalCompositeOperation = 'destination-out';
             this.ctx.lineWidth = 30;
+            this.ctx.shadowBlur = 0;
             document.querySelectorAll('.ink-color').forEach(el => el.classList.remove('active'));
             document.getElementById('ink-eraser').classList.add('active');
+            document.getElementById('ink-pen').classList.remove('active');
+            document.getElementById('ink-highlighter').classList.remove('active');
         },
         clear() {
             this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);

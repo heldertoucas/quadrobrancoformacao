@@ -78,6 +78,31 @@ const sync = {
             features.ink.ctx.stroke();
         }
 
+        if (data.type === 'ink_stroke_v2' && isProjector) {
+            if (!features.ink.ctx) {
+                const canvas = document.getElementById('ink-canvas');
+                features.ink.ctx = canvas.getContext('2d');
+                features.ink.resize();
+            }
+            features.ink.ctx.strokeStyle = data.color;
+            features.ink.ctx.lineWidth = data.width;
+            features.ink.ctx.globalCompositeOperation = data.op;
+            features.ink.ctx.lineCap = 'round';
+            features.ink.ctx.lineJoin = 'round';
+
+            if (data.glow) {
+                features.ink.ctx.shadowBlur = 15;
+                features.ink.ctx.shadowColor = data.color;
+            } else {
+                features.ink.ctx.shadowBlur = 0;
+            }
+
+            features.ink.ctx.beginPath();
+            features.ink.ctx.moveTo(data.from.x, data.from.y);
+            features.ink.ctx.quadraticCurveTo(data.control.x, data.control.y, data.to.x, data.to.y);
+            features.ink.ctx.stroke();
+        }
+
         if (data.type === 'ink_clear' && isProjector) {
             if (features.ink.ctx) features.ink.ctx.clearRect(0, 0, features.ink.ctx.canvas.width, features.ink.ctx.canvas.height);
         }

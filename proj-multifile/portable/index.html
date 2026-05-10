@@ -1584,11 +1584,22 @@ h1.highlight-mode {
         </div>
         <canvas id="ink-canvas"></canvas>
         <div id="ink-toolbar">
-            <div class="ink-color active" id="ink-col-ff0000" style="background:#ff0000;" onclick="features.ink.setColor('#ff0000')"></div>
-            <div class="ink-color" id="ink-col-00ff00" style="background:#00ff00;" onclick="features.ink.setColor('#00ff00')"></div>
-            <div class="ink-color" id="ink-col-ffff00" style="background:#ffff00;" onclick="features.ink.setColor('#ffff00')"></div>
-            <div class="ink-color" id="ink-col-ffffff" style="background:#ffffff;" onclick="features.ink.setColor('#ffffff')"></div>
+            <div id="ink-palette" style="display:flex; gap:12px;"></div>
             <div class="separator" style="height:20px;"></div>
+            <button class="ink-tool-btn active" id="ink-pen" onclick="features.ink.setPen()" title="Caneta">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2">
+                    <path d="m12 19 7-7 3 3-7 7-3-3z"></path>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                    <path d="M2 2l7.5 1.5"></path>
+                    <path d="M2 2l1.5 7.5"></path>
+                </svg>
+            </button>
+            <button class="ink-tool-btn" id="ink-highlighter" onclick="features.ink.setHighlighter()" title="Marcador (Semi-transparente)">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2">
+                    <path d="m9 11-6 6v3h9l3-3"></path>
+                    <path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"></path>
+                </svg>
+            </button>
             <button class="ink-tool-btn" id="ink-eraser" onclick="features.ink.setEraser()" title="Borracha">
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2">
                     <path d="M20 20H7L3 16C2 15 2 13 3 12L13 2L22 12L20 20Z"></path>
@@ -1926,6 +1937,18 @@ const BRANDS = {
     'ia': { light: 'https://i.imgur.com/9qGRGAt.png', dark: 'https://i.imgur.com/QPifhum.png', name: 'IA para Todos' }
 };
 
+const PALETTES = {
+    'dark': ['#ff0000', '#00ff00', '#ffff00', '#ffffff'],
+    'light': ['#d32f2f', '#388e3c', '#fbc02d', '#2b2b2b'],
+    'neon': ['#ff0055', '#00ff9f', '#00e5ff', '#ffffff'],
+    'nature': ['#2e7d32', '#00897b', '#fcc419', '#5d4037'],
+    'ocean': ['#4facfe', '#00f2fe', '#ffffff', '#2196f3'],
+    'sketch': ['#d33682', '#2b2b2b', '#268bd2', '#859900'],
+    'sunset': ['#ff9f1c', '#ff4d00', '#e040fb', '#ffffff'],
+    'gameboy': ['#0f380f', '#306230', '#8bac0f', '#9bbc0f'],
+    '8bit': ['#ff0044', '#ffcc00', '#00ffcc', '#ffffff']
+};
+
 const SOUNDS = {
     success: "sounds/certo.mp3",
     error: "sounds/errado.mp3",
@@ -1976,6 +1999,8 @@ const state = {
     isHighlight: false,
     textAlignment: 'center', // 'left', 'center', 'right'
     isAnimated: false,
+    isInkHighlighter: false,
+    inkColor: '#ff0000',
     view: 'text', // 'text', 'qr', 'dice', 'picker', 'none'
     channel: null
 };
@@ -2400,6 +2425,7 @@ const ui = {
         this.els.mainText.style.textAlign = state.textAlignment;
 
         this.updateFormatButtons();
+        if (features.ink.active) features.ink.renderPalette();
 
         const slideBtn = document.getElementById('btn-create-slide');
         const linkBtn = document.getElementById('btn-links');
@@ -2879,11 +2905,10 @@ const features = {
 
     ink: {
         active: false,
-        color: '#ff0000',
         isDrawing: false,
         ctx: null,
-        lastX: 0,
-        lastY: 0,
+        points: [],
+        _lastMidPoint: null,
         setup() {
             const canvas = document.getElementById('ink-canvas');
             if (!this.ctx) {
@@ -2903,13 +2928,15 @@ const features = {
         resize() {
             const canvas = document.getElementById('ink-canvas');
             const dpr = window.devicePixelRatio || 1;
+            const temp = this.ctx ? this.ctx.getImageData(0, 0, canvas.width, canvas.height) : null;
             canvas.width = window.innerWidth * dpr;
             canvas.height = window.innerHeight * dpr;
             canvas.style.width = window.innerWidth + 'px';
             canvas.style.height = window.innerHeight + 'px';
             if (this.ctx) {
                 this.ctx.scale(dpr, dpr);
-                this.setColor(this.color); // Re-apply settings after scale
+                if (temp) this.ctx.putImageData(temp, 0, 0);
+                this.applyBrushSettings();
             }
         },
         toggle() {
@@ -2921,46 +2948,129 @@ const features = {
             document.getElementById('btn-ink').classList.toggle('active', this.active);
             if (this.active) {
                 this.resize();
-                this.setColor(this.color);
+                this.renderPalette();
+                this.applyBrushSettings();
             }
         },
-        start(e) { this.isDrawing = true; [this.lastX, this.lastY] = [e.clientX, e.clientY]; },
+        renderPalette() {
+            const container = document.getElementById('ink-palette');
+            if (!container) return;
+            const colors = PALETTES[state.theme] || PALETTES.dark;
+            
+            // Set default color if current one not in palette and not highlighter
+            if (!colors.includes(state.inkColor) && !state.isInkHighlighter) {
+                state.inkColor = colors[0];
+            }
+
+            container.innerHTML = colors.map(c => `
+                <div class="ink-color ${state.inkColor === c ? 'active' : ''}" 
+                     id="ink-col-${c.replace('#', '')}" 
+                     style="background:${c};" 
+                     onclick="features.ink.setColor('${c}')"></div>
+            `).join('');
+        },
+        start(e) {
+            this.isDrawing = true;
+            const pt = { x: e.clientX, y: e.clientY };
+            this.points = [pt];
+            this._lastMidPoint = pt;
+            this.drawPoint(pt);
+        },
+        drawPoint(pt) {
+            this.ctx.beginPath();
+            this.ctx.arc(pt.x, pt.y, this.ctx.lineWidth / 2, 0, Math.PI * 2);
+            this.ctx.fill();
+        },
         draw(e) {
             if (!this.isDrawing) return;
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.lastX, this.lastY);
-            this.ctx.lineTo(e.clientX, e.clientY);
-            this.ctx.stroke();
-            if (state.channel) {
-                state.channel.postMessage({
-                    type: 'ink_stroke',
-                    from: { x: this.lastX, y: this.lastY },
-                    to: { x: e.clientX, y: e.clientY },
-                    color: this.ctx.strokeStyle,
-                    width: this.ctx.lineWidth,
-                    op: this.ctx.globalCompositeOperation
-                });
+            const pt = { x: e.clientX, y: e.clientY };
+            this.points.push(pt);
+
+            if (this.points.length > 2) {
+                const lastIdx = this.points.length - 1;
+                const p1 = this.points[lastIdx - 1];
+                const p2 = this.points[lastIdx];
+                const midPoint = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(this._lastMidPoint.x, this._lastMidPoint.y);
+                this.ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+                this.ctx.stroke();
+
+                if (state.channel) {
+                    state.channel.postMessage({
+                        type: 'ink_stroke_v2',
+                        from: this._lastMidPoint,
+                        control: p1,
+                        to: midPoint,
+                        color: this.ctx.strokeStyle,
+                        width: this.ctx.lineWidth,
+                        op: this.ctx.globalCompositeOperation,
+                        glow: this.ctx.shadowBlur > 0
+                    });
+                }
+                this._lastMidPoint = midPoint;
             }
-            [this.lastX, this.lastY] = [e.clientX, e.clientY];
         },
-        stop() { this.isDrawing = false; },
-        setColor(c) {
-            this.color = c;
-            this.ctx.strokeStyle = c;
-            this.ctx.lineWidth = 4;
+        stop() { this.isDrawing = false; this.points = []; },
+        applyBrushSettings() {
+            if (!this.ctx) return;
+            const isDark = ['dark', 'neon', 'ocean', 'sunset', 'gameboy', '8bit'].includes(state.theme);
+
             this.ctx.globalCompositeOperation = 'source-over';
             this.ctx.lineCap = 'round';
             this.ctx.lineJoin = 'round';
-            document.querySelectorAll('.ink-color').forEach(el => el.classList.remove('active'));
-            const btn = document.getElementById(`ink-col-${c.replace('#', '')}`);
-            if (btn) btn.classList.add('active');
+
+            if (state.isInkHighlighter) {
+                const hex = state.inkColor;
+                const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+                this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`;
+                this.ctx.lineWidth = 40;
+                this.ctx.shadowBlur = 0;
+            } else {
+                this.ctx.strokeStyle = state.inkColor;
+                this.ctx.lineWidth = 4;
+                if (isDark && state.theme === 'neon') {
+                    this.ctx.shadowBlur = 15;
+                    this.ctx.shadowColor = state.inkColor;
+                } else {
+                    this.ctx.shadowBlur = 0;
+                }
+            }
+            this.ctx.fillStyle = this.ctx.strokeStyle;
+        },
+        setColor(c) {
+            state.inkColor = c;
+            state.isInkHighlighter = false;
+            this.applyBrushSettings();
+            this.renderPalette();
+            document.getElementById('ink-pen').classList.add('active');
+            document.getElementById('ink-eraser').classList.remove('active');
+            document.getElementById('ink-highlighter').classList.remove('active');
+        },
+        setPen() {
+            state.isInkHighlighter = false;
+            this.applyBrushSettings();
+            document.getElementById('ink-pen').classList.add('active');
+            document.getElementById('ink-highlighter').classList.remove('active');
+            document.getElementById('ink-eraser').classList.remove('active');
+            this.renderPalette();
+        },
+        setHighlighter() {
+            state.isInkHighlighter = !state.isInkHighlighter;
+            this.applyBrushSettings();
+            document.getElementById('ink-highlighter').classList.toggle('active', state.isInkHighlighter);
+            document.getElementById('ink-pen').classList.toggle('active', !state.isInkHighlighter);
             document.getElementById('ink-eraser').classList.remove('active');
         },
         setEraser() {
             this.ctx.globalCompositeOperation = 'destination-out';
             this.ctx.lineWidth = 30;
+            this.ctx.shadowBlur = 0;
             document.querySelectorAll('.ink-color').forEach(el => el.classList.remove('active'));
             document.getElementById('ink-eraser').classList.add('active');
+            document.getElementById('ink-pen').classList.remove('active');
+            document.getElementById('ink-highlighter').classList.remove('active');
         },
         clear() {
             this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -3045,6 +3155,31 @@ const sync = {
             features.ink.ctx.beginPath();
             features.ink.ctx.moveTo(data.from.x, data.from.y);
             features.ink.ctx.lineTo(data.to.x, data.to.y);
+            features.ink.ctx.stroke();
+        }
+
+        if (data.type === 'ink_stroke_v2' && isProjector) {
+            if (!features.ink.ctx) {
+                const canvas = document.getElementById('ink-canvas');
+                features.ink.ctx = canvas.getContext('2d');
+                features.ink.resize();
+            }
+            features.ink.ctx.strokeStyle = data.color;
+            features.ink.ctx.lineWidth = data.width;
+            features.ink.ctx.globalCompositeOperation = data.op;
+            features.ink.ctx.lineCap = 'round';
+            features.ink.ctx.lineJoin = 'round';
+
+            if (data.glow) {
+                features.ink.ctx.shadowBlur = 15;
+                features.ink.ctx.shadowColor = data.color;
+            } else {
+                features.ink.ctx.shadowBlur = 0;
+            }
+
+            features.ink.ctx.beginPath();
+            features.ink.ctx.moveTo(data.from.x, data.from.y);
+            features.ink.ctx.quadraticCurveTo(data.control.x, data.control.y, data.to.x, data.to.y);
             features.ink.ctx.stroke();
         }
 

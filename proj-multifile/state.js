@@ -7,6 +7,18 @@ const BRANDS = {
     'ia': { light: 'https://i.imgur.com/9qGRGAt.png', dark: 'https://i.imgur.com/QPifhum.png', name: 'IA para Todos' }
 };
 
+const PALETTES = {
+    'dark': ['#ff0000', '#00ff00', '#ffff00', '#ffffff'],
+    'light': ['#d32f2f', '#388e3c', '#fbc02d', '#2b2b2b'],
+    'neon': ['#ff0055', '#00ff9f', '#00e5ff', '#ffffff'],
+    'nature': ['#2e7d32', '#00897b', '#fcc419', '#5d4037'],
+    'ocean': ['#4facfe', '#00f2fe', '#ffffff', '#2196f3'],
+    'sketch': ['#d33682', '#2b2b2b', '#268bd2', '#859900'],
+    'sunset': ['#ff9f1c', '#ff4d00', '#e040fb', '#ffffff'],
+    'gameboy': ['#0f380f', '#306230', '#8bac0f', '#9bbc0f'],
+    '8bit': ['#ff0044', '#ffcc00', '#00ffcc', '#ffffff']
+};
+
 const SOUNDS = {
     success: "sounds/certo.mp3",
     error: "sounds/errado.mp3",
@@ -57,6 +69,8 @@ const state = {
     isHighlight: false,
     textAlignment: 'center', // 'left', 'center', 'right'
     isAnimated: false,
+    isInkHighlighter: false,
+    inkColor: '#ff0000',
     view: 'text', // 'text', 'qr', 'dice', 'picker', 'none'
     channel: null
 };
