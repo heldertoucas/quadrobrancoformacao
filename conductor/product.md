@@ -6,7 +6,7 @@ Aprimoramento do Quadro Branco Interativo, focando na fiabilidade offline, acess
 ## Funcionalidades Chave (v2.7)
 - **Offline Total:** Bibliotecas QR Code e Confetti embutidas diretamente no ficheiro.
 - **Acessibilidade Refinada:** Modais com Focus Trap e suporte total a teclado (tecla 'Esc').
-- **UX Mobile Adaptativa:** Menu com scroll dinâmico e placar inteligente que evita sobreposições.
+- **UX "Gestão de Tempo" (v3.0):** Timer dinâmico com anel de progresso SVG, modo Hectic (pulsação visual nos últimos 10s) e efeito cinematográfico "Time's Up" com suporte para Drag & Drop.
 - **Votação Visual (Polls v2):** Infografias vivas com gradientes multicolor, micro-interações de impacto físico e cerimónia de vencedor imersiva (grayscale e glow).
 - **Modo Dual Screen:** Separação entre "Janela de Comando" e "Janela de Projeção" sincronizadas via Broadcast API, permitindo esconder os controlos da audiência.
 - **Ferramenta de Desenho (Ink Overlay v2):** Digital marker profissional com suavização Bézier, modo marcador semi-transparente, paletas adaptativas ao tema e efeito "Neon Glow" sincronizado.
