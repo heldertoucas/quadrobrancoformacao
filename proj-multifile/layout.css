@@ -1,0 +1,300 @@
+/* --- 2. RESET & BASE --- */
+* {
+    box-sizing: border-box;
+    transition: background-color 1s ease-in-out, 
+                border-color 1s ease-in-out, 
+                color 1s ease-in-out, 
+                box-shadow 1s ease-in-out,
+                backdrop-filter 1s ease-in-out;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-main);
+    color: var(--text-color);
+    transition: color 0.5s ease;
+    user-select: none;
+}
+
+/* Animated Background */
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3));
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    z-index: -2;
+}
+
+/* Sunburst Effect */
+.sunburst {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 200vmax;
+    height: 200vmax;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(from 0deg,
+            rgba(255, 215, 0, 0.1) 0deg 15deg,
+            transparent 15deg 30deg);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+    animation: rotateSunburst 30s linear infinite;
+}
+
+.sunburst.active {
+    opacity: 1;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus Management */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Main Display Area */
+#display-area {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    --char-count: 1;
+    font-size: calc(clamp(1.5rem, calc(6vw * var(--scale-factor, 1)), 6rem) * var(--manual-zoom, 1));
+    font-weight: var(--optical-weight, 800);
+    letter-spacing: var(--optical-spacing, normal);
+    line-height: var(--optical-lh, 1.2);
+    margin: 0;
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    transition: font-size 0.2s linear, opacity 0.5s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: normal;
+}
+
+/* Rich Content Overrides */
+h1.rich-content {
+    font-weight: normal;
+    text-align: initial;
+    white-space: normal;
+    display: block;
+    width: 100%;
+}
+
+h1.rich-content b,
+h1.rich-content strong {
+    font-weight: 900;
+}
+
+h1.rich-content i,
+h1.rich-content em {
+    font-style: italic;
+}
+
+h1.rich-content u {
+    text-decoration: underline;
+}
+
+h1.rich-content ul,
+h1.rich-content ol {
+    text-align: inherit;
+    margin: 0 auto;
+    display: inline-block;
+    padding-left: 2rem;
+}
+
+h1.rich-content li {
+    margin-bottom: 5px;
+}
+
+h1.serif-mode {
+    font-family: var(--font-serif);
+    font-style: italic;
+    --optical-weight: 400;
+    text-shadow: none;
+}
+
+.word-span {
+    display: inline-block;
+    white-space: pre;
+    opacity: 0;
+    animation: wordFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Navigation Arrows */
+.nav-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    height: 70px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 90;
+    transition: all 0.3s;
+    opacity: 0;
+    pointer-events: none;
+    backdrop-filter: blur(5px);
+    color: var(--text-color);
+}
+
+.nav-arrow.visible {
+    opacity: 0.6;
+    pointer-events: all;
+}
+
+.nav-arrow:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.15);
+    background: var(--glass-hover);
+}
+
+.nav-arrow.left { left: 30px; }
+.nav-arrow.right { right: 30px; }
+
+.nav-arrow svg {
+    width: 32px;
+    height: 32px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    fill: none;
+}
+
+.nav-queue-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--accent-color);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* STARTUP MESSAGE */
+#startup-message {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    text-align: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease, visibility 1s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    max-width: 90%;
+    pointer-events: none;
+}
+
+#startup-message.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Projector Mode Overrides */
+body.projector-mode #control-panel,
+body.projector-mode #logo-area,
+body.projector-mode .nav-arrow {
+    display: none !important;
+}
+
+body.projector-mode #display-area {
+    padding-bottom: 0;
+}
+
+/* ZEN MODE - IDLE STATE */
+body[data-mode="simple"] #logo-area,
+body[data-mode="simple"] #control-panel,
+body[data-mode="simple"] .nav-arrow,
+body[data-mode="simple"] .input-wrapper {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+body[data-mode="simple"].idle #logo-area {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px);
+}
+
+body[data-mode="simple"].idle #control-panel {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+body[data-mode="simple"].idle .nav-arrow {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+}
+
+body[data-mode="simple"].idle .input-wrapper {
+    opacity: 0;
+    pointer-events: none;
+}

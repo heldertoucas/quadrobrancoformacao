@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-PT" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro Branco v3.0</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;900&family=Orbitron:wght@400;700&family=Patrick+Hand&family=Quicksand:wght@400;700&family=Raleway:wght@400;700&family=Poppins:wght@400;700&family=VT323&family=Press+Start+2P&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        rel="stylesheet">
+
+    <!-- INJECT_STYLES -->
+</head>
+
+<body data-mode="pro">
+
+    <div class="background"></div>
+    <div id="sunburst" class="sunburst"></div>
+
+    <!-- HEADER: Logo & Menu -->
+    <header id="logo-area" onclick="handleLogoAreaClick(event)">
+        <button id="logo-btn" onclick="toggleMenu(event)" aria-label="Abrir Menu de Tema" aria-haspopup="true">
+            <img id="app-logo" src="" alt="Logo">
+            <span id="logo-arrow">▼</span>
+            <svg class="icon-hamburger" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+
+        <div id="style-menu" class="dropdown-menu" role="menu">
+            <button class="menu-close-btn" onclick="toggleMenu(event)" aria-label="Fechar Menu">×</button>
+            <div class="menu-content">
+                <div class="menu-category">Programa</div>
+                <button class="menu-item" onclick="app.setBrand('cml')" id="brand-cml" role="menuitem">
+                    <div class="menu-dot"></div> CMLisboa
+                </button>
+                <button class="menu-item" onclick="app.setBrand('futuro')" id="brand-futuro" role="menuitem">
+                    <div class="menu-dot"></div> Futuro Digital
+                </button>
+                <button class="menu-item" onclick="app.setBrand('passaporte')" id="brand-passaporte" role="menuitem">
+                    <div class="menu-dot"></div> Passaporte Competências
+                </button>
+                <button class="menu-item" onclick="app.setBrand('ia')" id="brand-ia" role="menuitem">
+                    <div class="menu-dot"></div> IA para Todos
+                </button>
+
+                <div class="menu-divider"></div>
+
+                <div class="menu-category">Modo</div>
+                <button class="menu-item" onclick="app.setMode('pro')" id="mode-pro" role="menuitem">
+                    <div class="menu-dot"></div> Pro
+                </button>
+                <button class="menu-item" onclick="app.setMode('simple')" id="mode-simple" role="menuitem">
+                    <div class="menu-dot"></div> Zen
+                </button>
+
+                <div class="menu-divider"></div>
+
+                <div class="menu-category">Tema</div>
+                <button class="menu-item" onclick="app.setTheme('dark')" id="theme-dark" role="menuitem">
+                    <div class="menu-dot"></div> Escuro
+                </button>
+                <button class="menu-item" onclick="app.setTheme('light')" id="theme-light" role="menuitem">
+                    <div class="menu-dot"></div> Claro
+                </button>
+
+                <div class="menu-divider"></div>
+
+                <button class="menu-item" onclick="app.setTheme('neon')" id="theme-neon" role="menuitem">
+                    <div class="menu-dot"></div> Neon
+                </button>
+                <button class="menu-item" onclick="app.setTheme('sketch')" id="theme-sketch" role="menuitem">
+                    <div class="menu-dot"></div> Sketch
+                </button>
+                <button class="menu-item" onclick="app.setTheme('nature')" id="theme-nature" role="menuitem">
+                    <div class="menu-dot"></div> Natureza
+                </button>
+                <button class="menu-item" onclick="app.setTheme('ocean')" id="theme-ocean" role="menuitem">
+                    <div class="menu-dot"></div> Oceano
+                </button>
+                <button class="menu-item" onclick="app.setTheme('sunset')" id="theme-sunset" role="menuitem">
+                    <div class="menu-dot"></div> Pôr do Sol
+                </button>
+                <button class="menu-item" onclick="app.setTheme('gameboy')" id="theme-gameboy" role="menuitem">
+                    <div class="menu-dot"></div> Gameboy
+                </button>
+                <button class="menu-item" onclick="app.setTheme('8bit')" id="theme-8bit" role="menuitem">
+                    <div class="menu-dot"></div> 8-bit
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <button id="nav-left" class="nav-arrow left" onclick="app.navHistory('back')" aria-label="Recuar no Histórico">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+        </svg>
+    </button>
+    <button id="nav-right" class="nav-arrow right" onclick="app.navHistory('fwd')"
+        aria-label="Avançar (Fila ou Histórico)">
+        <div id="nav-queue-count" class="nav-queue-badge hidden">0</div>
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6" />
+        </svg>
+    </button>
+
+    <!-- OVERLAYS -->
+    <div id="scoreboard"></div>
+    <div id="timer-overlay">00:00</div>
+
+    <!-- MAIN CONTENT -->
+    <main id="display-area" aria-live="polite">
+        <h1 id="main-text"></h1>
+        <div id="qr-container">
+            <button id="qr-close" onclick="ui.closeQR()" aria-label="Fechar QR Code">×</button>
+            <div id="qr-canvas-wrapper"></div>
+        </div>
+        <div id="poll-display"></div>
+        <div id="poll-actions">
+            <button class="poll-btn" onclick="features.poll.checkWinner()" title="Apurar Vencedor" style="background:var(--success-color); color:white; width:auto; padding:0 20px;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" style="margin-right:8px;">${ICONS.Target}</svg>
+                Apurar
+            </button>
+            <button class="poll-btn" onclick="features.poll.close()" title="Fechar Votação" style="background:var(--danger-color); color:white;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none">${ICONS.X}</svg>
+            </button>
+        </div>
+        <canvas id="ink-canvas"></canvas>
+        <div id="ink-toolbar">
+            <div class="ink-color active" id="ink-col-ff0000" style="background:#ff0000;" onclick="features.ink.setColor('#ff0000')"></div>
+            <div class="ink-color" id="ink-col-00ff00" style="background:#00ff00;" onclick="features.ink.setColor('#00ff00')"></div>
+            <div class="ink-color" id="ink-col-ffff00" style="background:#ffff00;" onclick="features.ink.setColor('#ffff00')"></div>
+            <div class="ink-color" id="ink-col-ffffff" style="background:#ffffff;" onclick="features.ink.setColor('#ffffff')"></div>
+            <div class="separator" style="height:20px;"></div>
+            <button class="ink-tool-btn" id="ink-eraser" onclick="features.ink.setEraser()" title="Borracha">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2">
+                    <path d="M20 20H7L3 16C2 15 2 13 3 12L13 2L22 12L20 20Z"></path>
+                    <line x1="17" y1="17" x2="7" y2="7"></line>
+                </svg>
+            </button>
+            <button class="ink-tool-btn" onclick="features.ink.clear()" title="Limpar Tudo">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2">
+                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                </svg>
+            </button>
+            <div class="separator" style="height:20px;"></div>
+            <button class="ink-tool-btn" onclick="features.ink.toggle()" title="Sair do Desenho" style="color:var(--danger-color); border-color:var(--danger-color);">×</button>
+        </div>
+    </main>
+
+    <!-- FOOTER: Control Panel -->
+    <footer id="control-panel">
+        <div id="toolbar">
+            <button class="tool-btn" onclick="ui.toggleExpand()" title="Modo Lista/Texto Longo">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="21" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="21" y1="18" x2="3" y2="18"></line>
+                </svg>
+            </button>
+            <div class="separator"></div>
+
+            <button class="tool-btn" onclick="features.timer.setup()" title="Definir tempo">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </button>
+
+            <button class="tool-btn" onclick="features.score.setup()" title="Placar">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+                <span>Placar</span>
+            </button>
+
+            <button class="tool-btn" onclick="features.poll.setup()" title="Votação">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20v-6M6 20V10M18 20V4"></path>
+                </svg>
+                <span>Poll</span>
+            </button>
+
+            <div class="separator"></div>
+
+            <button class="tool-btn" onclick="features.dice.roll()" title="Gerar Dados">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                    <path d="M16 8h.01"></path>
+                    <path d="M8 8h.01"></path>
+                    <path d="M8 16h.01"></path>
+                    <path d="M16 16h.01"></path>
+                    <path d="M12 12h.01"></path>
+                </svg>
+                <span>Dados</span>
+            </button>
+            <button class="tool-btn" onclick="features.picker.setup()" title="Sortear Nome">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z">
+                    </path>
+                </svg>
+                <span>Sorteio</span>
+            </button>
+
+            <div class="separator"></div>
+
+            <button id="btn-ink" class="tool-btn" onclick="features.ink.setup()" title="Ferramenta de Desenho">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                    <path d="M2 2l7.5 1.5"></path>
+                    <path d="M2 2l1.5 7.5"></path>
+                </svg>
+                <span>Caneta</span>
+            </button>
+
+            <div class="separator"></div>
+
+            <button id="btn-sound-drawer" class="tool-btn" onclick="ui.toggleSoundDrawer()" title="Sons">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+            </button>
+
+            <button class="tool-btn" onclick="ui.toggleQR()" title="Criar QR Code">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="5" height="5" x="3" y="3" rx="1"></rect>
+                    <rect width="5" height="5" x="16" y="3" rx="1"></rect>
+                    <rect width="5" height="5" x="3" y="16" rx="1"></rect>
+                    <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+                    <path d="M21 21v.01"></path>
+                    <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+                    <path d="M3 12h.01"></path>
+                    <path d="M12 3h.01"></path>
+                    <path d="M12 16v.01"></path>
+                    <path d="M16 12h1"></path>
+                    <path d="M21 12v.01"></path>
+                    <path d="M12 21v-1"></path>
+                </svg>
+            </button>
+
+            <div class="separator"></div>
+
+            <button id="btn-create-slide" class="tool-btn hidden" onclick="features.slide.toggleInline()"
+                title="Criar Slide">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Slide</span>
+            </button>
+
+            <button id="btn-links" class="tool-btn hidden" onclick="ui.toggleLinkMenu()" title="Links Rápidos">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+            </button>
+
+            <button class="tool-btn" onclick="app.clear()" title="Limpar Ecrã">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                </svg>
+            </button>
+
+            <div class="separator"></div>
+
+            <button class="tool-btn" onclick="window.open('index.html?mode=projector', '_blank')" title="Janela de Projeção">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Projetor</span>
+            </button>
+        </div>
+
+        <div id="rich-toolbar">
+            <button class="submenu-close" onclick="ui.toggleExpand()" title="Fechar">×</button>
+            <button id="fmt-bold" class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('bold', false, null); ui.updateFormatButtons()"
+                title="Negrito"><b>B</b></button>
+            <button id="fmt-italic" class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('italic', false, null); ui.updateFormatButtons()"
+                title="Itálico"><i>I</i></button>
+            <button id="fmt-underline" class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('underline', false, null); ui.updateFormatButtons()"
+                title="Sublinhado"><u>U</u></button>
+            <div class="separator" style="height: 16px;"></div>
+            <button id="fmt-list" class="fmt-btn"
+                onmousedown="event.preventDefault(); document.execCommand('insertUnorderedList', false, null); ui.updateFormatButtons()"
+                title="Lista">
+                <svg viewBox="0 0 24 24">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+            </button>
+            <button id="fmt-num" class="fmt-btn"
+                onmousedown="event.preventDefault(); document.execCommand('insertOrderedList', false, null); ui.updateFormatButtons()"
+                title="Numeração">
+                <svg viewBox="0 0 24 24">
+                    <line x1="10" y1="6" x2="21" y2="6"></line>
+                    <line x1="10" y1="12" x2="21" y2="12"></line>
+                    <line x1="10" y1="18" x2="21" y2="18"></line>
+                    <path d="M4 6h1v4"></path>
+                    <path d="M4 10h2"></path>
+                    <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
+                </svg>
+            </button>
+            <div class="separator" style="height: 16px;"></div>
+            <button id="fmt-left" class="fmt-btn"
+                onclick="ui.setTextAlignment('left')" title="Esquerda">
+                <svg viewBox="0 0 24 24">
+                    <line x1="17" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="17" y1="18" x2="3" y2="18"></line>
+                </svg>
+            </button>
+            <button id="fmt-center" class="fmt-btn"
+                onclick="ui.setTextAlignment('center')" title="Centro">
+                <svg viewBox="0 0 24 24">
+                    <line x1="21" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="21" y1="18" x2="3" y2="18"></line>
+                </svg>
+            </button>
+            <button id="fmt-right" class="fmt-btn"
+                onclick="ui.setTextAlignment('right')" title="Direita">
+                <svg viewBox="0 0 24 24">
+                    <line x1="21" y1="10" x2="7" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="21" y1="18" x2="7" y2="18"></line>
+                </svg>
+            </button>
+            <div class="separator" style="height: 16px;"></div>
+            <button id="btn-serif" class="fmt-btn" onclick="ui.toggleSerif()" title="Modo Serifa (Citação)">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 20h4L12 4h4l4 16h-4"></path>
+                    <line x1="8" y1="14" x2="16" y2="14"></line>
+                </svg>
+            </button>
+            <button id="btn-highlight" class="fmt-btn" onclick="ui.toggleHighlight()" title="Destaque (Glow)">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                    <path d="M5 3v4"></path>
+                    <path d="M19 17v4"></path>
+                    <path d="M3 5h4"></path>
+                    <path d="M17 19h4"></path>
+                </svg>
+            </button>
+            <button id="btn-animate" class="fmt-btn" onclick="ui.toggleAnimations()" title="Animar Texto">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+            </button>
+            <div class="separator" style="height: 16px;"></div>
+            <div id="slide-colors-toolbar" style="display:none; gap:10px; align-items:center;">
+                <div class="inline-scheme-btn" style="background: linear-gradient(135deg, #FFB743, #FF4D00);"
+                    onclick="features.slide.setScheme('default')" id="toolbar-scheme-default" title="Amarelo/Vermelho">
+                </div>
+                <div class="inline-scheme-btn" style="background: linear-gradient(135deg, #5271FF, #933EC5);"
+                    onclick="features.slide.setScheme('scheme2')" id="toolbar-scheme-scheme2" title="Azul/Roxo"></div>
+                <div class="inline-scheme-btn" style="background: linear-gradient(135deg, #35B729, #FF4D00);"
+                    onclick="features.slide.setScheme('scheme3')" id="toolbar-scheme-scheme3" title="Verde/Vermelho">
+                </div>
+            </div>
+        </div>
+
+        <div id="sound-drawer">
+            <button class="submenu-close" onclick="ui.toggleSoundDrawer()" title="Fechar">×</button>
+        </div>
+
+        <div class="input-wrapper">
+            <div id="input-text" class="input-editor" contenteditable="true"
+                placeholder="Escreva... (Shift+Enter para Fila)" spellcheck="false"></div>
+            <button id="btn-send" onclick="app.manualSubmit()" title="Projetar (Ctrl+Enter)"
+                aria-label="Projetar Texto">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+            <div id="queue-info-badge" class="nav-queue-badge">0 na Fila</div>
+            <div id="balloon-input" class="temp-balloon top">Escreva o texto do slide aqui</div>
+        </div>
+
+        <div id="links-drawer" class="links-drawer">
+            <div class="link-card" onclick="features.slide.openSlides()">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Slides Formação</span>
+            </div>
+            <div class="link-card" onclick="features.slide.openPortal()">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span>Portal Futuro Digital</span>
+            </div>
+            <div class="link-card" onclick="features.slide.openChallenge()">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                </svg>
+                <span>Desafio do dia</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="startup-message">
+        Criado por Hélder Touças e Vanessa Veríssimo para os programas Passaporte Competências Digitais | Futuro Digital
+        | IA para Todos da Câmara Municipal de Lisboa
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay" aria-hidden="true">
+        <div class="glass-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="modal-header">
+                <h2 id="modal-title">Título</h2>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-footer">
+                <button class="modal-btn btn-cancel" id="modal-cancel">Cancelar</button>
+                <button class="modal-btn btn-confirm" id="modal-confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INJECT_SCRIPTS -->
+</body>
+
+</html>

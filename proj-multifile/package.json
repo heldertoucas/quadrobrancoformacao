@@ -1,0 +1,11 @@
+{
+  "name": "quadro-branco-multifile",
+  "version": "3.0.0",
+  "description": "Multi-file version of Quadro Branco with portable build script",
+  "main": "app.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "author": "Hélder Touças & Vanessa Veríssimo",
+  "license": "MIT"
+}
