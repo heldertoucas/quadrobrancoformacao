@@ -12,6 +12,8 @@ Aprimoramento do Quadro Branco Interativo, focando na fiabilidade offline, acess
 - **Ferramenta de Desenho (Ink Overlay):** Camada de desenho livre sobre o quadro com suporte para cores, borracha e sincronização em tempo real entre janelas.
 - **Identidade "Glass-Premium" (v3.0):** Glassmorphism evoluído com grão fractal e luz superior especular.
 - **Cinematografia de Interface (v3.0):** Morphing de cores suave (1s) e contraste dinâmico automático via JS.
+- **Tipografia Editorial (v3.0):** Ajuste dinâmico de peso e espaçamento baseado na escala; suporte para fontes Serif (Citações) e efeitos de brilho (Glow).
+- **Controlo de Alinhamento (v3.0):** Forçamento de alinhamento de texto (Esquerda/Centro) sincronizado com a projeção.
 
 ## Estratégia v3.0 (Em Planeamento)
 - **Gamificação Elevada:** Elementos físicos 3D (dados), sistemas de podium dinâmicos e cerimónias de vitória imersivas.
