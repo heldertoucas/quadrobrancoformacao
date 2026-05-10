@@ -77,7 +77,7 @@ class ModalSystem {
     show({ title, html, confirmText = 'Confirmar', showCancel = true }) {
         this.lastFocusedElement = document.activeElement;
         this.title.innerText = title;
-        this.body.innerHTML = html;
+        this.body.innerHTML = DOMPurify.sanitize(html);
         this.btnConfirm.innerText = confirmText;
         this.btnCancel.style.display = showCancel ? 'block' : 'none';
         this.overlay.classList.add('open');
@@ -261,7 +261,8 @@ const ui = {
 
         if (isHtml && !isQR) {
             this.els.mainText.classList.add('rich-content');
-            this.els.mainText.innerHTML = processedText;
+            // Sanitize untrusted HTML
+            this.els.mainText.innerHTML = DOMPurify.sanitize(processedText);
         } else {
             this.els.mainText.classList.remove('rich-content');
             if (state.isAnimated && !isQR && processedText) {

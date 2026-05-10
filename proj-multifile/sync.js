@@ -26,6 +26,7 @@ const sync = {
     },
 
     handleBroadcast(data) {
+        if (!data || typeof data !== 'object' || !data.type) return;
         const params = new URLSearchParams(window.location.search);
         const isProjector = params.get('mode') === 'projector';
 
@@ -35,24 +36,28 @@ const sync = {
 
         if (data.type === 'sync' && isProjector) {
             const s = data.state;
-            state.theme = s.theme;
-            state.brand = s.brand;
-            state.isSerif = s.isSerif;
-            state.isHighlight = s.isHighlight;
-            state.isAnimated = s.isAnimated;
-            state.textAlignment = s.textAlignment;
-            state.history = s.history;
-            state.historyIndex = s.historyIndex;
-            state.scores = s.scores;
+            if (!s) return;
+            state.theme = s.theme || state.theme;
+            state.brand = s.brand || state.brand;
+            state.isSerif = !!s.isSerif;
+            state.isHighlight = !!s.isHighlight;
+            state.isAnimated = !!s.isAnimated;
+            state.textAlignment = s.textAlignment || 'center';
+            state.history = s.history || state.history;
+            state.historyIndex = s.historyIndex !== undefined ? s.historyIndex : state.historyIndex;
+            state.scores = s.scores || state.scores;
             ui.applyState();
 
             if (s.view === 'poll' && s.pollActive) {
                 features.poll.votes = s.pollVotes;
-                features.poll.build(s.pollLabels, true);
+                // Sanitize poll labels if they exist
+                const cleanLabels = s.pollLabels ? s.pollLabels.map(l => DOMPurify.sanitize(l)) : [];
+                features.poll.build(cleanLabels, true);
             } else if (s.view === 'score') {
                 features.score.build(Object.keys(s.scores).length, true);
             } else {
-                features.setView(s.view, data.data);
+                const cleanData = data.data ? DOMPurify.sanitize(data.data) : null;
+                features.setView(s.view, cleanData);
             }
         }
 

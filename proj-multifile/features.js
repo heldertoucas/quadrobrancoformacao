@@ -21,7 +21,7 @@ const features = {
                 const isHtml = data && (/<[a-z][\s\S]*>/i.test(data) || data.includes('style=') || data.includes('<b>'));
                 if (isHtml) {
                     ui.els.mainText.classList.add('rich-content');
-                    ui.els.mainText.innerHTML = data;
+                    ui.els.mainText.innerHTML = DOMPurify.sanitize(data);
                 } else {
                     ui.els.mainText.innerText = data || "";
                 }
@@ -396,8 +396,15 @@ const features = {
         },
         resize() {
             const canvas = document.getElementById('ink-canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            if (this.ctx) {
+                this.ctx.scale(dpr, dpr);
+                this.setColor(this.color); // Re-apply settings after scale
+            }
         },
         toggle() {
             this.active = !this.active;
@@ -406,7 +413,10 @@ const features = {
             canvas.classList.toggle('active', this.active);
             toolbar.classList.toggle('visible', this.active);
             document.getElementById('btn-ink').classList.toggle('active', this.active);
-            if (this.active) this.setColor(this.color);
+            if (this.active) {
+                this.resize();
+                this.setColor(this.color);
+            }
         },
         start(e) { this.isDrawing = true; [this.lastX, this.lastY] = [e.clientX, e.clientY]; },
         draw(e) {

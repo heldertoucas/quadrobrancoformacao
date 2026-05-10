@@ -9,6 +9,7 @@ const cssFiles = [
 ];
 
 const jsFiles = [
+    'vendor-dompurify.js',
     'vendor-qrious.js',
     'vendor-confetti.js',
     'state.js',
@@ -37,6 +38,9 @@ function build() {
             console.log(`  📜 Adding JS: ${file}`);
             jsContent += fs.readFileSync(path.join(__dirname, file), 'utf8') + '\n';
         });
+
+        // Remove Dev Only sections
+        html = html.replace(/<!-- DEV_ONLY_START -->[\s\S]*?<!-- DEV_ONLY_END -->/g, '');
 
         // Inject
         html = html.replace('<!-- INJECT_STYLES -->', `<style>\n${cssContent}</style>`);

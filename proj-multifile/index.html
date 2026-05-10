@@ -13,6 +13,13 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;900&family=Orbitron:wght@400;700&family=Patrick+Hand&family=Quicksand:wght@400;700&family=Raleway:wght@400;700&family=Poppins:wght@400;700&family=VT323&family=Press+Start+2P&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
 
+    <!-- DEV_ONLY_START -->
+    <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="layout.css">
+    <link rel="stylesheet" href="ui.css">
+    <link rel="stylesheet" href="animations.css">
+    <!-- DEV_ONLY_END -->
+
     <!-- INJECT_STYLES -->
 </head>
 
@@ -171,14 +178,14 @@
             </button>
             <div class="separator"></div>
 
-            <button class="tool-btn" onclick="features.timer.setup()" title="Definir tempo">
+            <button class="tool-btn" onclick="features.timer.setup()" title="Definir tempo" aria-label="Definir Timer">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
             </button>
 
-            <button class="tool-btn" onclick="features.score.setup()" title="Placar">
+            <button class="tool-btn" onclick="features.score.setup()" title="Placar" aria-label="Abrir Placar">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
                     <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
@@ -190,7 +197,7 @@
                 <span>Placar</span>
             </button>
 
-            <button class="tool-btn" onclick="features.poll.setup()" title="Votação">
+            <button class="tool-btn" onclick="features.poll.setup()" title="Votação" aria-label="Configurar Votação">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 20v-6M6 20V10M18 20V4"></path>
                 </svg>
@@ -233,14 +240,14 @@
 
             <div class="separator"></div>
 
-            <button id="btn-sound-drawer" class="tool-btn" onclick="ui.toggleSoundDrawer()" title="Sons">
+            <button id="btn-sound-drawer" class="tool-btn" onclick="ui.toggleSoundDrawer()" title="Sons" aria-label="Abrir Painel de Sons">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                 </svg>
             </button>
 
-            <button class="tool-btn" onclick="ui.toggleQR()" title="Criar QR Code">
+            <button class="tool-btn" onclick="ui.toggleQR()" title="Criar QR Code" aria-label="Gerar QR Code do Texto">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <rect width="5" height="5" x="3" y="3" rx="1"></rect>
                     <rect width="5" height="5" x="16" y="3" rx="1"></rect>
@@ -297,17 +304,17 @@
         </div>
 
         <div id="rich-toolbar">
-            <button class="submenu-close" onclick="ui.toggleExpand()" title="Fechar">×</button>
+            <button class="submenu-close" onclick="ui.toggleExpand()" title="Fechar" aria-label="Fechar Submenu">×</button>
             <button id="fmt-bold" class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('bold', false, null); ui.updateFormatButtons()"
-                title="Negrito"><b>B</b></button>
+                title="Negrito" aria-label="Negrito"><b>B</b></button>
             <button id="fmt-italic" class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('italic', false, null); ui.updateFormatButtons()"
-                title="Itálico"><i>I</i></button>
+                title="Itálico" aria-label="Itálico"><i>I</i></button>
             <button id="fmt-underline" class="fmt-btn" onmousedown="event.preventDefault(); document.execCommand('underline', false, null); ui.updateFormatButtons()"
-                title="Sublinhado"><u>U</u></button>
+                title="Sublinhado" aria-label="Sublinhado"><u>U</u></button>
             <div class="separator" style="height: 16px;"></div>
             <button id="fmt-list" class="fmt-btn"
                 onmousedown="event.preventDefault(); document.execCommand('insertUnorderedList', false, null); ui.updateFormatButtons()"
-                title="Lista">
+                title="Lista" aria-label="Lista de Pontos">
                 <svg viewBox="0 0 24 24">
                     <line x1="8" y1="6" x2="21" y2="6"></line>
                     <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -319,7 +326,7 @@
             </button>
             <button id="fmt-num" class="fmt-btn"
                 onmousedown="event.preventDefault(); document.execCommand('insertOrderedList', false, null); ui.updateFormatButtons()"
-                title="Numeração">
+                title="Numeração" aria-label="Lista Numerada">
                 <svg viewBox="0 0 24 24">
                     <line x1="10" y1="6" x2="21" y2="6"></line>
                     <line x1="10" y1="12" x2="21" y2="12"></line>
@@ -331,7 +338,7 @@
             </button>
             <div class="separator" style="height: 16px;"></div>
             <button id="fmt-left" class="fmt-btn"
-                onclick="ui.setTextAlignment('left')" title="Esquerda">
+                onclick="ui.setTextAlignment('left')" title="Esquerda" aria-label="Alinhar à Esquerda">
                 <svg viewBox="0 0 24 24">
                     <line x1="17" y1="10" x2="3" y2="10"></line>
                     <line x1="21" y1="6" x2="3" y2="6"></line>
@@ -340,7 +347,7 @@
                 </svg>
             </button>
             <button id="fmt-center" class="fmt-btn"
-                onclick="ui.setTextAlignment('center')" title="Centro">
+                onclick="ui.setTextAlignment('center')" title="Centro" aria-label="Alinhar ao Centro">
                 <svg viewBox="0 0 24 24">
                     <line x1="21" y1="10" x2="3" y2="10"></line>
                     <line x1="21" y1="6" x2="3" y2="6"></line>
@@ -349,7 +356,7 @@
                 </svg>
             </button>
             <button id="fmt-right" class="fmt-btn"
-                onclick="ui.setTextAlignment('right')" title="Direita">
+                onclick="ui.setTextAlignment('right')" title="Direita" aria-label="Alinhar à Direita">
                 <svg viewBox="0 0 24 24">
                     <line x1="21" y1="10" x2="7" y2="10"></line>
                     <line x1="21" y1="6" x2="3" y2="6"></line>
@@ -358,13 +365,13 @@
                 </svg>
             </button>
             <div class="separator" style="height: 16px;"></div>
-            <button id="btn-serif" class="fmt-btn" onclick="ui.toggleSerif()" title="Modo Serifa (Citação)">
+            <button id="btn-serif" class="fmt-btn" onclick="ui.toggleSerif()" title="Modo Serifa (Citação)" aria-label="Modo Serifa">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 20h4L12 4h4l4 16h-4"></path>
                     <line x1="8" y1="14" x2="16" y2="14"></line>
                 </svg>
             </button>
-            <button id="btn-highlight" class="fmt-btn" onclick="ui.toggleHighlight()" title="Destaque (Glow)">
+            <button id="btn-highlight" class="fmt-btn" onclick="ui.toggleHighlight()" title="Destaque (Glow)" aria-label="Destaque Glow">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
                     <path d="M5 3v4"></path>
@@ -373,7 +380,7 @@
                     <path d="M17 19h4"></path>
                 </svg>
             </button>
-            <button id="btn-animate" class="fmt-btn" onclick="ui.toggleAnimations()" title="Animar Texto">
+            <button id="btn-animate" class="fmt-btn" onclick="ui.toggleAnimations()" title="Animar Texto" aria-label="Animar Entrada de Texto">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
                 </svg>
@@ -455,6 +462,17 @@
             </div>
         </div>
     </div>
+
+    <!-- DEV_ONLY_START -->
+    <script src="vendor-dompurify.js"></script>
+    <script src="vendor-qrious.js"></script>
+    <script src="vendor-confetti.js"></script>
+    <script src="state.js"></script>
+    <script src="ui.js"></script>
+    <script src="features.js"></script>
+    <script src="sync.js"></script>
+    <script src="app.js"></script>
+    <!-- DEV_ONLY_END -->
 
     <!-- INJECT_SCRIPTS -->
 </body>
