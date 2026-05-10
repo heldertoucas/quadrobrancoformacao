@@ -1,16 +1,21 @@
 # ✍️ Specification: Typography & Dynamic Scaling v3.0
 
 ## Overview
-Elevate the typography of the "Quadro Branco" to an editorial standard, ensuring that text is not only legible but also aesthetically pleasing across all scales and contexts.
+Elevate the typography of the "Quadro Branco" to an editorial standard, ensuring that text is not only legible but also aesthetically pleasing across all scales. This version introduces advanced CSS transformations and JS-driven optical sizing.
 
 ## Functional Requirements
-- **Optical Weight Adjustment:** Implement a JS logic that dynamically reduces `font-weight` (e.g., 900 to 600) and increases `letter-spacing` as the `font-size` decreases (handling long texts).
-- **Variable Line-Height:** Adapt `line-height` dynamically between 1.1 (short titles) and 1.5 (long paragraphs) based on content length.
-- **Serif Font Support:** Introduce a class or mode for "Citations" using a classic serif font (e.g., Playfair Display or EB Garamond) to change the "mood" of the screen.
-- **Cinematic Text Entry:** Implement an optional sequential entry animation (character-by-character or word-by-word fade/slide) for key messages.
+- **Dynamic Optical Sizing:**
+    - **Weight Scaling:** Automatically reduce `font-weight` as text size decreases (e.g., 900 for titles, 500 for long paragraphs).
+    - **Spacing Scaling:** Proportially increase `letter-spacing` for long text blocks to maintain readability.
+    - **Variable Line-Height:** Adapt `line-height` dynamically between 1.1 (short) and 1.5 (long) based on character count.
+- **Editorial Modes:**
+    - **Serif Mode (Citations):** Use **Playfair Display** (including Italics) to switch the layout to a classic citation mood.
+    - **Cinematic Entry:** Implement a **Word-by-word fade/slide** animation for revealing text on the screen.
+- **UI Integration:**
+    - Insert toggle controls for "Serif Mode" and "Animations" into the **Long Text / Rich Toolbar** submenu.
 
 ## Acceptance Criteria
-- [ ] Text weight and spacing adjust correctly when long text is entered.
-- [ ] Line-height remains comfortable for multi-line content.
-- [ ] Switching to "Serif Mode" correctly applies the new font family and styling.
-- [ ] Animations run smoothly at 60fps.
+- [ ] Text weight, spacing, and line-height adjust correctly based on content length.
+- [ ] Toggling "Serif Mode" correctly applies Playfair Display.
+- [ ] Cinematic animation triggers on word boundaries with smooth transitions.
+- [ ] Submenu buttons highlight when the respective mode is active.

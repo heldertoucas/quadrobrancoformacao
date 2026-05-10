@@ -1,8 +1,8 @@
 {
   "track_id": "v3_typography_20260508",
   "type": "feature",
-  "status": "new",
-  "created_at": "2026-05-08T02:00:00Z",
-  "updated_at": "2026-05-08T02:00:00Z",
-  "description": "Refinamento editorial da tipografia: Ajuste ótico de peso, interlinha variável e suporte a fontes serifadas."
+  "status": "planned",
+  "created_at": "2026-05-08T01:45:00Z",
+  "updated_at": "2026-05-09T14:30:00Z",
+  "description": "Refined Typography v3.0 with Playfair Display, word-by-word animations, and rich-toolbar integration."
 }

@@ -1,17 +1,21 @@
 # 🗺️ Implementation Plan: Typography v3.0
 
-## Phase 1: Dynamic Optical Scaling
-- [ ] Task: Implement `ui.updateOpticalScaling()`
-    - [ ] Calculate `weight` and `letter-spacing` based on `scale-factor`
-    - [ ] Update `h1` style dynamically
-- [ ] Task: Variable Line-Height Logic
-    - [ ] Map content length to a `line-height` variable
-- [ ] Task: Conductor - User Manual Verification 'Dynamic Optical Scaling'
+## Phase 1: Infrastructure & Optical Scaling
+- [ ] Task: Integrate **Playfair Display** Google Font.
+    - [ ] Update `index.html` head with new font family and weights.
+- [ ] Task: Implement Dynamic Optical Scaling Engine.
+    - [ ] Create `ui.updateOpticalScaling(charCount)` to calculate CSS custom properties.
+    - [ ] Map character count to `--optical-weight` and `--optical-spacing`.
+- [ ] Task: Update Display Logic for Variable Line-Height.
+    - [ ] Refactor `ui.updateDisplay` to apply dynamic line-height based on text volume.
+- [ ] Task: Conductor - User Manual Verification 'Infrastructure & Optical Scaling'
 
-## Phase 2: Serif & Cinematic Entry
-- [ ] Task: Integrate Serif Google Fonts
-    - [ ] Add Playfair Display/EB Garamond to HTML head
-    - [ ] Create `.serif-mode` CSS class
-- [ ] Task: Character Animation Engine
-    - [ ] Implement `ui.animateTextIn()` using `span` wrapping or CSS keyframes
-- [ ] Task: Conductor - User Manual Verification 'Serif & Cinematic Entry'
+## Phase 2: Editorial Modes & UI Integration
+- [ ] Task: Implement **Serif Mode** (Citations).
+    - [ ] Define `.serif-mode` CSS class and apply Playfair Display styling.
+- [ ] Task: Implement **Word-by-word Animation** Engine.
+    - [ ] Create `ui.animateTextIn()` using CSS transitions/keyframes and staggered delays.
+- [ ] Task: UI Submenu Refinement.
+    - [ ] Add "Serif" and "Animate" toggle buttons to the `#rich-toolbar`.
+    - [ ] Implement active state feedback for these buttons.
+- [ ] Task: Conductor - User Manual Verification 'Editorial Modes & UI'
