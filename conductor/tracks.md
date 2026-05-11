@@ -23,10 +23,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [ ] **Track: Temas, Marcas e Coesão v2**
 *Link: [./tracks/v3_themes_v2_20260508/](./tracks/v3_themes_v2_20260508/)*
 
----
-
-- [x] **Track: Timer e Gestão de Tempo v2**
-*Link: [./tracks/v3_timer_v2_20260508/](./tracks/v3_timer_v2_20260508/)*
 
 ---
 
